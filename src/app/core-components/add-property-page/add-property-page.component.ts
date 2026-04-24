@@ -1240,17 +1240,29 @@ isNumber(value:any) {
     // propertyInfo.account_details[0].account_email = this.stepOneForm.controls['escrowIdEmail'].value;
     propertyInfo.asset_description = this.stepOneForm.controls['assetDescriptionName'].value;
     propertyInfo.listing_date = this.datePipe.transform(this.stepOneForm.controls['assetListingDateName'].value, 'yyyy-MM-dd HH:mm:ss') ?? '';
-    propertyInfo.total_tokens = this.stepOneForm.controls['totalSharesName'].value;
-    propertyInfo.limit_per_share = this.stepOneForm.controls['limitPerShareName'].value;
-    propertyInfo.asset_price = this.stepOneForm.controls['assetPriceName'].value;
-    propertyInfo.price_per_token = this.stepOneForm.controls['pricePerShareName'].value;
+    propertyInfo.total_tokens = Number(this.stepOneForm.controls['totalSharesName'].value);
+    propertyInfo.limit_per_share = Number(this.stepOneForm.controls['limitPerShareName'].value);
+    propertyInfo.asset_price = Number(this.stepOneForm.controls['assetPriceName'].value);
+    propertyInfo.price_per_token = Number(this.stepOneForm.controls['pricePerShareName'].value);
     propertyInfo.mileage = Number(this.stepOneForm.controls['milage'].value);
-    propertyInfo.high_performance_engine_in_cc =Number( this.stepOneForm.controls['highPerformanceEngine'].value);
-    propertyInfo.fk_asset_category_id = this.assetsCategories?.find((item: any) => item.asset_catagory_value === this.stepOneForm.controls['assetCategoryName'].value)?.asset_catagory_id;
-    propertyInfo.fk_ownership_type_id = this.assetsOwnersType?.find((item: any) => item.ownership_value === this.stepOneForm.controls['OwnershipType'].value)?.ownership_id;
-    propertyInfo.fk_a_transmisson_id = this.assetsTransmissionType?.find((item: any) => item.transmission_value === this.stepOneForm.controls['transmissionType'].value)?.transmission_id;
-    propertyInfo.fk_asset_type_id = this.assetTypes?.find((item: any) => item.asset_type_value === this.stepOneForm.controls['assetTypeName'].value)?.asset_type_id;
-    propertyInfo.credit_hour_per_token = this.stepOneForm.controls['creditHourPerToken'].value;
+    propertyInfo.high_performance_engine_in_cc = Number(this.stepOneForm.controls['highPerformanceEngine'].value);
+    // Robust Mapping for required IDs with fallbacks
+    propertyInfo.fk_asset_type_id = this.assetTypes?.find((item: any) => item.asset_type_value === this.stepOneForm.controls['assetTypeName'].value)?.asset_type_id || 1;
+    propertyInfo.fk_asset_category_id = this.assetsCategories?.find((item: any) => item.asset_catagory_value === this.stepOneForm.controls['assetCategoryName'].value)?.asset_catagory_id || 1;
+    propertyInfo.fk_ownership_type_id = this.assetsOwnersType?.find((item: any) => item.ownership_value === this.stepOneForm.controls['OwnershipType'].value)?.ownership_id || 1;
+    propertyInfo.fk_a_transmisson_id = this.assetsTransmissionType?.find((item: any) => item.transmission_value === this.stepOneForm.controls['transmissionType'].value)?.transmission_id || 1;
+    propertyInfo.fk_a_class_id = this.assetsClassType?.find((item: any) => item.class_name === this.stepTwoForm.controls['classType'].value || item.class_value === this.stepTwoForm.controls['classType'].value)?.class_id || 1;
+    propertyInfo.fk_fuel_id = this.assetsFuelTypes?.find((item: any) => item.fuel_type_value === this.stepTwoForm.controls['assetFuel'].value)?.fuel_type_id || 1;
+
+    console.log("Resolved IDs for Add Asset:", {
+      type: propertyInfo.fk_asset_type_id,
+      category: propertyInfo.fk_asset_category_id,
+      transmission: propertyInfo.fk_a_transmisson_id,
+      class: propertyInfo.fk_a_class_id,
+      fuel: propertyInfo.fk_fuel_id
+    });
+
+    propertyInfo.credit_hour_per_token = Number(this.stepOneForm.controls['creditHourPerToken'].value);
     // Map IDs for Location and Brand using .find()
     const selectedCity = this.stepOneForm.controls['cityName'].value;
     const selectedLocation = this.stepOneForm.controls['locationName'].value;
@@ -1276,17 +1288,14 @@ isNumber(value:any) {
         }
       }
     }
-    // propertyInfo.propertyType = this.stepOneForm.controls['propertyTypeName'].value;
-    propertyInfo.asset_features =this.assetFeatures;
+    // propertyType and other redundant assignments removed to prevent overwriting fix
+    propertyInfo.asset_features = this.assetFeatures;
     propertyInfo.is_air_condition = Number(this.stepTwoForm.controls['airConditionType'].value);
-    propertyInfo.fk_a_class_id = this.assetsClassType?.find((item: any) => item.class_name === this.stepTwoForm.controls['classType'].value)?.class_id;
-    // propertyInfo.fk_brand_id = Number(this.stepTwoForm.controls['brandType'].value);
-    propertyInfo.fk_fuel_id = this.assetsFuelTypes?.find((item: any) => item.fuel_type_value === this.stepTwoForm.controls['assetFuel'].value)?.fuel_type_id;
     propertyInfo.base_currency_id = Number(this.stepOneForm.controls['currencyTypeName'].value);
-    // propertyInfo.base_currency_id = Number(this.stepOneForm.controls['currencyTypeName'].value);
-   let ownerType = this.assetsOwnersType.find((option:any) => option.ownership_id ===  Number(this.stepOneForm.controls['OwnershipType'].value));
-   let transType = this.assetsTransmissionType.find((option:any) => option.transmission_id ===  Number(this.stepOneForm.controls['transmissionType'].value));
-   let classType = this.assetsClassType.find((option:any) => option.class_id ===  Number( this.stepTwoForm.controls['classType'].value));
+    propertyInfo.active = 1; // Ensure new assets are active
+    let ownerType = this.assetsOwnersType?.find((option: any) => option.ownership_value === this.stepOneForm.controls['OwnershipType'].value);
+    let transType = this.assetsTransmissionType?.find((option: any) => option.transmission_value === this.stepOneForm.controls['transmissionType'].value);
+    let classType = this.assetsClassType?.find((option: any) => option.class_name === this.stepTwoForm.controls['classType'].value || option.class_value === this.stepTwoForm.controls['classType'].value);
   //  let airType = this.assetsAirConditionerType.find((option:any) => option.id ===  Number(this.stepTwoForm.controls['airConditionType'].value));
    let airType = this.assetsAirConditionerType.find(
     (item: any) => item.id === Number(this.stepTwoForm.controls['airConditionType'].value)
@@ -1441,17 +1450,21 @@ isNumber(value:any) {
     // propertyInfo.account_details[0].account_email = this.stepOneForm.controls['escrowIdEmail'].value;
     propertyInfo.asset_description = this.stepOneForm.controls['assetDescriptionName'].value;
     propertyInfo.listing_date = this.datePipe.transform(this.stepOneForm.controls['assetListingDateName'].value, 'yyyy-MM-dd HH:mm:ss') ?? '';
-    propertyInfo.total_tokens = this.stepOneForm.controls['totalSharesName'].value;
-    propertyInfo.limit_per_share = this.stepOneForm.controls['limitPerShareName'].value;
-    propertyInfo.asset_price = this.stepOneForm.controls['assetPriceName'].value;
-    propertyInfo.price_per_token = this.stepOneForm.controls['pricePerShareName'].value;
-    propertyInfo.mileage = this.stepOneForm.controls['milage'].value;
-    propertyInfo.high_performance_engine_in_cc = this.stepOneForm.controls['highPerformanceEngine'].value;
-    propertyInfo.fk_asset_category_id = this.assetsCategories?.find((item: any) => item.asset_catagory_value === this.stepOneForm.controls['assetCategoryName'].value)?.asset_catagory_id;
-    propertyInfo.fk_ownership_type_id = this.assetsOwnersType?.find((item: any) => item.ownership_value === this.stepOneForm.controls['OwnershipType'].value)?.ownership_id;
-    propertyInfo.fk_a_transmisson_id = this.assetsTransmissionType?.find((item: any) => item.transmission_value === this.stepOneForm.controls['transmissionType'].value)?.transmission_id;
-    propertyInfo.fk_asset_type_id = this.assetTypes?.find((item: any) => item.asset_type_value === this.stepOneForm.controls['assetTypeName'].value)?.asset_type_id;
-    propertyInfo.credit_hour_per_token = this.stepOneForm.controls['creditHourPerToken'].value;
+    propertyInfo.total_tokens = Number(this.stepOneForm.controls['totalSharesName'].value);
+    propertyInfo.limit_per_share = Number(this.stepOneForm.controls['limitPerShareName'].value);
+    propertyInfo.asset_price = Number(this.stepOneForm.controls['assetPriceName'].value);
+    propertyInfo.price_per_token = Number(this.stepOneForm.controls['pricePerShareName'].value);
+    propertyInfo.mileage = Number(this.stepOneForm.controls['milage'].value);
+    propertyInfo.high_performance_engine_in_cc = Number(this.stepOneForm.controls['highPerformanceEngine'].value);
+    // Robust Mapping for required IDs with fallbacks (Update)
+    propertyInfo.fk_asset_type_id = this.assetTypes?.find((item: any) => item.asset_type_value === this.stepOneForm.controls['assetTypeName'].value)?.asset_type_id || 1;
+    propertyInfo.fk_asset_category_id = this.assetsCategories?.find((item: any) => item.asset_catagory_value === this.stepOneForm.controls['assetCategoryName'].value)?.asset_catagory_id || 1;
+    propertyInfo.fk_ownership_type_id = this.assetsOwnersType?.find((item: any) => item.ownership_value === this.stepOneForm.controls['OwnershipType'].value)?.ownership_id || 1;
+    propertyInfo.fk_a_transmisson_id = this.assetsTransmissionType?.find((item: any) => item.transmission_value === this.stepOneForm.controls['transmissionType'].value)?.transmission_id || 1;
+    propertyInfo.fk_a_class_id = this.assetsClassType?.find((item: any) => item.class_name === this.stepTwoForm.controls['classType'].value || item.class_value === this.stepTwoForm.controls['classType'].value)?.class_id || 1;
+    propertyInfo.fk_fuel_id = this.assetsFuelTypes?.find((item: any) => item.fuel_type_value === this.stepTwoForm.controls['assetFuel'].value)?.fuel_type_id || 1;
+
+    propertyInfo.credit_hour_per_token = Number(this.stepOneForm.controls['creditHourPerToken'].value);
     // Robust mapping for Update Location and Brand using .find()
     const updCityLabel = this.stepOneForm.controls['cityName'].value;
     const updLocLabel = this.stepOneForm.controls['locationName'].value;
@@ -1477,17 +1490,14 @@ isNumber(value:any) {
         }
       }
     }
-    // propertyInfo.propertyType = this.stepOneForm.controls['propertyTypeName'].value;
+    // Update cleanup
     propertyInfo.asset_features = this.assetFeatures;
     propertyInfo.is_air_condition = Number(this.stepTwoForm.controls['airConditionType'].value);
-    propertyInfo.fk_a_class_id = this.assetsClassType?.find((item: any) => item.class_name === this.stepTwoForm.controls['classType'].value)?.class_id;
-    // propertyInfo.fk_brand_id = Number(this.stepTwoForm.controls['brandType'].value);
-    propertyInfo.fk_fuel_id = this.assetsFuelTypes?.find((item: any) => item.fuel_type_value === this.stepTwoForm.controls['assetFuel'].value)?.fuel_type_id;
     propertyInfo.base_currency_id = Number(this.stepOneForm.controls['currencyTypeName'].value);
-    // propertyInfo.base_currency_id = Number(this.stepOneForm.controls['currencyTypeName'].value);
-   let ownerType = this.assetsOwnersType.find((option:any) => option.ownership_id ===  Number(this.stepOneForm.controls['OwnershipType'].value));
-   let transType = this.assetsTransmissionType.find((option:any) => option.transmission_id ===  Number(this.stepOneForm.controls['transmissionType'].value));
-   let classType = this.assetsClassType.find((option:any) => option.class_id ===  Number( this.stepTwoForm.controls['classType'].value));
+    propertyInfo.active = 1; 
+    let ownerType = this.assetsOwnersType?.find((option: any) => option.ownership_value === this.stepOneForm.controls['OwnershipType'].value);
+    let transType = this.assetsTransmissionType?.find((option: any) => option.transmission_value === this.stepOneForm.controls['transmissionType'].value);
+    let classType = this.assetsClassType?.find((option: any) => option.class_name === this.stepTwoForm.controls['classType'].value || option.class_value === this.stepTwoForm.controls['classType'].value);
   //  let airType = this.assetsAirConditionerType.find((option:any) => option.id ===  Number(this.stepTwoForm.controls['airConditionType'].value));
    let airType = this.assetsAirConditionerType.find(
     (item: any) => item.id === Number(this.stepTwoForm.controls['airConditionType'].value)
