@@ -1,0 +1,62 @@
+.filter-align {
+    z-index: 2;
+    background-color: var(--color-white);
+    max-height: 100%;
+}
+
+.filter-text {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 100%;
+    color: var(--color-primary-shade);
+}
+
+.filter-radio {
+    scale: 0.9;
+    margin-top: 6.5px;
+}
+
+.filter-input {
+    font-size: 12px;
+    padding: 0.25rem 0.25rem;
+    text-align: center;
+    height: auto;
+}
+
+.active {
+    background-color: var(--color-primary-shade);
+    box-shadow: none !important;
+    color: var(--color-white);
+}
+
+.location-box {
+    max-height: 10dvh;
+    overflow: scroll;
+    border: 1px dashed var(--color-grey-light);
+    border-radius: 5px;
+    height: 10dvh;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.vr-custom {
+    display: block;
+}
+
+@media only screen and (max-width:1060px) {
+    .vr-custom {
+        visibility: hidden;
+    }
+}
+
+@media only screen and (max-width:600px) {
+    .vr-custom {
+        display: none;
+    }
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  

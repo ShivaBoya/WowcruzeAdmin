@@ -1,0 +1,28 @@
+.custom-container {
+    min-height: 86dvh;
+    // height: calc(90dvh - 60px);
+  }
+  .dashed-box {
+    border: 1px dashed var(--color-grey-light);
+    border-radius: 5px;
+    padding: 0.5rem;
+    text-align: center;
+  }
+  .dashed-box-contain {
+    height: 10dvh;
+    max-height: 10dvh;
+    overflow: scroll;
+  }
+  .with{
+    width: 100%;
+    box-shadow: none;
+    color: var(--color-white) !important;
+  }
+  .primary{
+    background-color: var(--color-primary) !important;
+  }
+  .danger{
+    background-color: var(--color-danger) !important;
+  }
+  
+  

@@ -1,0 +1,61 @@
+<div class="modal modal-backdrop modal-dialog-centered" id="errorModalId" *ngIf="errorModal.status" tabindex="-1"
+    style="display: flex;">
+    <div class="modal-dialog" style="width: 25vw;">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fa fa-warning text-red mb-3" style="font-size: 40px;"></i>
+                    <div class="text-center">
+                        <span class="text-red fs-16 fw-500" id="errorModalHeaderId">{{errorModal.title}}</span>
+                        <p id="errorModalContentId" class="fs-12">{{errorModal.content}}</p>
+                        <hr>
+                        <button type="button" class="btn-gold fs-12" data-bs-dismiss="modal"
+                            (click)="closeModal(errorModal, 'ERR_API')">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal-backdrop modal-dialog-centered" id="successModalId" *ngIf="successModal.status" tabindex="-1"
+    style="display: flex;">
+    <div class="modal-dialog" style="width: 25vw;">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fa fa-check-circle text-green mb-3" style="font-size: 50px;"></i>
+                    <div class="text-center">
+                        <span class="text-green fs-16 fw-500" id="successModalHeaderId">{{successModal.title}}</span>
+                        <p id="successModalContentId" class="fs-12">{{successModal.content}}</p>
+                        <hr>
+                        <button type="button" class="btn-gold fs-12" data-bs-dismiss="modal"
+                            (click)="closeModal(successModal, 'SUCCESS_API')">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal modal-backdrop modal-dialog-centered" id="confirmationModalId" *ngIf="confirmModal.status"
+  tabindex="1" style="display: flex; z-index: 9;">
+  <div class="modal-dialog" style="width: 25vw;">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="text-center">
+          <div class="text-center">
+            <div class="d-flex flex-row w-100 justify-content-between align-items-center">
+              <span class="text-primary fs-16 fw-500 text-left" id="conformModalHeaderId">{{confirmModal.title | uppercase}}</span>
+              <i class="fa fa-close c-pointer" (click)="closePopup(confirmModal, 'CONFIRM_API')"></i>
+            </div>
+            <hr>
+            <p id="successModalContentId" class="fs-12">{{confirmModal.content}}</p>
+            <hr>
+            <div type="button" class="d-flex justify-content-end " id="confirmYesButtonId" data-bs-dismiss="modal"
+            (click)="closeModal(confirmModal, 'CONFIRM_API')">
+              <span class="badge badge-gold-bold  p-2 ml-2 align-items-end">Yes</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

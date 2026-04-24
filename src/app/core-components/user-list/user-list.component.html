@@ -1,0 +1,110 @@
+<div class="d-flex justify-content-start flex-column align-items-center custom-container">
+  <div class="col-12 p-0 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="title-font">KYC Listing</div>
+    </div>
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap flex-control">
+      <div class="badge badge-danger-bold filter-cls text-f c-pointer" (click)="openKYCFilter()">
+        <span>
+          Filters
+          <i class="fa fa-filter ml-1"></i>
+        </span>
+      </div>
+      <div class="d-flex justify-content-end align-items-center flex-wrap">
+        <div class="fs-12 date-font mr-2" *ngIf=" this.isFromDateIsLessThenToDate"> 'From date' should be less then 'To
+          date'</div>
+        <div class="fs-12 date-font mr-2" *ngIf="this.isDateEmpty"> 'From date' or 'To date' cannot be empty</div>
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+          <div class="fs-12 mr-2"> Date Filter : </div>
+          <div class="d-flex justify-content-between">
+            <input class="c-pointer" name="start" id="startDateID" [(ngModel)]="startDate" style="width: min-content;"
+              (ngModelChange)="filterDate()" type="date" min="1990-01-01" max="3000-12-31" placeholder="dd-mm-yyyy"
+              class="form-control fs-12 ng-untouched ng-pristine ng-valid" ng-reflect-name="start"
+              ng-reflect-model="2023-05-09">
+            <hr style="width: 1rem;">
+            <input class="c-pointer" name="end" id="endDateID" [(ngModel)]="endDate" style="width: min-content;"
+              (ngModelChange)="filterDate()" type="date" min="1990-01-01" max="3000-12-31" placeholder="dd-mm-yyyy"
+              class="form-control fs-12 ng-untouched ng-pristine ng-valid" ng-reflect-name="end"
+              ng-reflect-model="2023-05-16">
+            <i (click)="fetchUsersByDate()"
+              class="badge badge-primary d-flex c-pointer align-items-center justify-content-center ml-2 fa fa-search fs-12"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <table class="table table-responsive table-striped-columns mb-3" id="user_list_table_id">
+      <thead class="table-dark">
+        <tr>
+          <th class="table-head-font">Sl.No.</th>
+          <th class="table-head-font">Date</th>
+          <th class="table-head-font">User ID</th>
+          <th class="table-head-font property-name">User Name</th>
+          <th class="table-head-font">Mobile No</th>
+          <th class="table-head-font">Wallet Address</th>
+          <th class="table-head-font">KYC Status</th>
+        </tr>
+      </thead>
+      <tbody class="table-font">
+        <tr (click)="routeToKYCProfile(user.kyc_id, user.user_id)" *ngFor="
+            let user of UserListing
+              | paginate : { itemsPerPage: tableSize, currentPage: page };
+            let i = index
+          ">
+          <td class="table-font">{{ i + 1 }}</td>
+          <td class="table-font">
+            {{ user.created_at | date : "yyyy-MM-dd" }}
+          </td>
+          <td class="table-font">{{ user.user_id }}</td>
+          <td class="table-font">{{ user.name}}</td>
+          <td class="table-font">{{ user.mobile || "--" }}</td>
+          <td class="table-font">{{ user.wallet || "--" }}</td>
+          <td class="table-font" style="text-align: center" *ngIf="user.kyc_status === 'APPROVED'">
+            <span class="badge badge-success alignment fs-10">{{ user.kyc_status }}
+            </span>
+          </td>
+          <td class="table-font" *ngIf="user.kyc_status === 'REQUESTED'">
+            <span class="badge badge-primary alignment fs-10">{{ user.kyc_status }}
+            </span>
+          </td>
+          <td class="table-font" *ngIf="user.kyc_status === 'REJECTED'">
+            <span class="badge badge-danger alignment fs-10">{{ user.kyc_status }}
+            </span>
+          </td>
+          <!-- <td class="table-font">
+           
+            <span class="fs-12 c-pointer dashed-box" (click)="routeToKYCProfile(user.kyc_id)">
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </span>
+           
+          </td> -->
+        </tr>
+      </tbody>
+      <div class="no-data" *ngIf="UserListing.length == 0">
+        No data available
+      </div>
+    </table>
+    <div class="d-flex justify-content-between align-items-center mb-auto flex-wrap flex-control pagination-align">
+      <div class="d-flex fs-12 justify-content-between align-items-center">
+        <span class="mr-2" style="white-space: nowrap">Number Of Rows:</span>
+        <div mdbDropdown class="dropdown">
+          <span mdbDropdownToggle id="dd-number-of-rows-id" class="badge badge-primary c-pointer">{{ tableSize }}<i
+              class="ml-3 fa fa-angle-down"></i></span>
+          <ul mdbDropdownMenu class="dropdown-menu mb-2" style="min-width: 4.2rem"
+            aria-labelledby="dd-number-of-rows-id">
+            <li *ngFor="let item of numberOfRows" class="c-pointer">
+              <a class="dropdown-item text-center fs-12" (click)="setNumberOfRows(item)">{{ item }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="pagination">
+        <pagination-controls (pageChange)="page = $event"></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loader-parent" id="listingLoaderKYCId" *ngIf="this.isPageLoader">
+  <div class="loader"></div>
+  <div class="mt-2 text-gold">Loading</div>
+</div>

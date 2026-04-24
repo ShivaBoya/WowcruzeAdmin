@@ -1,0 +1,140 @@
+<div class="modal modal-dialog-scrollable modal-dialog-centered filter-align modal-backdrop" id="buyersFiltersId"
+  tabindex="-1" style="display: none">
+  <div class="modal-dialog" style="width: 60dvw; max-width: 100dvw">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex flex-row w-100 justify-content-between align-items-center">
+          <h5 class="title-font m-0" id="gridModalLabel">Filter By</h5>
+          <i (click)="closePopup()" class="fa fa-close c-pointer"></i>
+        </div>
+      </div>
+      <div class="modal-body p-3" style="max-height: 75dvh">
+        <div class="d-flex flex-wrap">
+          <div style="flex: 1; min-width: 250px" class="d-flex flex-column justify-content-start">
+            <!-- <div>
+              <div class="head-font mb-3 text-align">Token Claim Status</div>
+              <div class="mb-3">
+                <div class="d-flex flex-wrap mb-3 mr-0 ml-0" style="gap: 0.5rem">
+                  <div class="filter-btn m-0" *ngFor="let nftTypeItem of NFTFilterType"
+                    [class.active]="currentNFTType.includes(nftTypeItem)" (click)="
+                      filterByPropertyStatusTypesBuyers(nftTypeItem, 'NFT')
+                    "> {{ getStatusNftBuyer(nftTypeItem, "NFT") }}
+                  </div>
+                </div>
+              </div>
+            </div> -->
+            <div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="head-font text-align">Search By Asset Id</div>
+                <div class="badge badge-primary-bold p-2 ml-2" type="submit" (click)="
+                    setSearchByFilterItem(searchPropertyId, 'asset_id')" [class.disabled]="isPropertyIdEmpty">
+                  <span class="fs-10">Add</span>
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="d-flex justify-content-start align-items-center mb-2">
+                  <input (input)="onPropertyIdInputChange($event)" class="form-control m-0 filter-input text-left" type="number" placeholder=""
+                    (keyup.enter)="setSearchByFilterItem(searchPropertyId, 'asset_id')" #searchPropertyId>
+                </div>
+                <div class="location-box">
+                  <div class="d-flex flex-wrap" *ngIf="propertyIdSearchItems.length != 0">
+                    <div class="filter-btn mb-2 d-flex flex-row" *ngFor="let searchItem of propertyIdSearchItems">
+                      <span class="mr-2" id="searchPropertyId">{{searchItem}}</span>
+                      <span class="badge badge-danger-bold badge-minus"
+                        (click)="removeSearchByFilterItem(searchItem, 'asset_id')">
+                        <span><i class="fa fa-minus fs-10"></i></span></span>
+                    </div>
+                  </div>
+                  <span *ngIf="propertyIdSearchItems.length == 0"
+                    class="text-muted d-flex justify-content-center align-items-center h-100 fs-12">Please
+                    add a search value.</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="head-font text-align">Search By Asset Name</div>
+                <div class="badge badge-primary-bold p-2 ml-2" type="submit" (click)="
+                    setSearchByFilterItem(searchPropertyName, 'PROPERTY_NAME')
+                  " [class.disabled]="isPropertyNameEmpty">
+                  <span class="fs-10">Add</span>
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="d-flex justify-content-start align-items-center mb-2">
+                  <input class="form-control m-0 filter-input text-left" type="text" placeholder="" (keyup.enter)="
+                      setSearchByFilterItem(searchPropertyName, 'PROPERTY_NAME')
+                    " #searchPropertyName (input)="onPropertyNameInputChange($event)"/>
+                </div>
+                <div class="location-box">
+                  <div class="d-flex flex-wrap" *ngIf="propertyNameSearchItems.length != 0">
+                    <div class="filter-btn mb-2 d-flex flex-row" *ngFor="let searchItem of propertyNameSearchItems">
+                      <span class="mr-2">{{ searchItem }}</span>
+                      <span class="badge badge-danger-bold badge-minus" (click)="
+                          removeSearchByFilterItem(searchItem, 'PROPERTY_NAME')
+                        ">
+                        <span><i class="fa fa-minus fs-10"></i></span></span>
+                    </div>
+                  </div>
+                  <span *ngIf="propertyNameSearchItems.length == 0"
+                    class="text-muted d-flex justify-content-center align-items-center h-100 fs-12">Please add a search
+                    value.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="vr-custom"></div>
+
+          <div style="flex: 1; min-width: 250px" class="d-flex flex-column justify-content-start">
+           
+            <div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="head-font text-align">Search By Investor's Name</div>
+                <div class="badge badge-primary-bold p-2 ml-2" type="submit" (click)="
+                    setSearchByFilterItem(searchBuyersName, 'BUYER_NAME')
+                  " [class.disabled]="isPropertyBuyerNameEmpty">
+                  <span class="fs-10">Add</span>
+                </div>
+              </div>
+              <div class="mb-3">
+                <div class="d-flex justify-content-start align-items-center mb-2">
+                  <input class="form-control m-0 filter-input text-left" type="text" placeholder="" (keyup.enter)="
+                      setSearchByFilterItem(searchBuyersName, 'BUYER_NAME')
+                    " #searchBuyersName (input)="onPropertyBuyerNameInputChange($event)" />
+                </div>
+                <div class="location-box">
+                  <div class="d-flex flex-wrap" *ngIf="buyerNameSearchItems.length != 0">
+                    <div class="filter-btn mb-2 d-flex flex-row" *ngFor="let searchItem of buyerNameSearchItems">
+                      <span class="mr-2">{{ searchItem }}</span>
+                      <span class="badge badge-danger-bold badge-minus" (click)="
+                          removeSearchByFilterItem(searchItem, 'BUYER_NAME')
+                        ">
+                        <span><i class="fa fa-minus fs-10"></i></span></span>
+                    </div>
+                  </div>
+                  <span *ngIf="buyerNameSearchItems.length == 0"
+                    class="text-muted d-flex justify-content-center align-items-center h-100 fs-12">Please add a search
+                    value.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="modal-footer m-0">
+        <div class="badge badge-primary-bold mr-2" type="submit" (click)="applyBuyerFilter()">
+          Apply
+        </div>
+        <div class="badge badge-danger-bold" type="submit" (click)="clearFilter()">
+          Clear
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>
+
+<div class="loader-parent" id="buyerlistingLoaderId" style="display: none">
+  <div class="loader"></div>
+  <div class="mt-2 text-gold">Loading</div>
+</div>

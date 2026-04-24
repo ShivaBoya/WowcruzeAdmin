@@ -1,0 +1,213 @@
+<div class="custom-container">
+    <div class="mt-3">
+        <div class="title-font d-flex justify-content-between align-items-center mb-3">
+            <span>USER'S KYC PROFILE</span>
+            <div class="d-flex align-items-center">
+                <div for="inputEmail4" class="head-font mr-2">KYC Status: </div>
+                <div class="center-align">
+                    <div>
+                        <span
+                            class="{{getStatusColor(this.kycListing.kyc_status)}}">{{this.kycListing.kyc_status}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-center flex-wrap align-self-center" style="gap: 2rem">
+            <div style="width: 50%;">
+                <div class="card p-3">
+                    <form [formGroup]="kycForm" class="d-flex flex-wrap justify-content-between" style="gap: 2rem;">
+                        <div class="d-flex flex-column justify-content-between" style="min-width: 400px; flex: 1;">
+                            <div class="d-block justify-content-between mb-2" style="gap: 2rem;">
+                                <div class="flex-fill">
+                                    <label for="user_name_id" class="head-font d-flex">
+                                        <span>User Name</span>
+                                        <span class="text-red ml-auto">
+                                        </span>
+                                    </label>
+                                    <input type="text" class="form-control fs-12" id="user_name_id"
+                                        formControlName="userName">
+                                </div>
+                                <div class="flex-fill">
+                                    <label for="phone_name_id" class="head-font d-flex">
+                                        <span>Phone Number</span>
+                                        <span class="text-red ml-auto">
+                                        </span>
+                                    </label>
+                                    <input type="text" class="form-control  fs-12" id="phone_name_id"
+                                        formControlName="phoneName">
+                                </div>
+                            </div>
+                            <div class="d-block justify-content-between mb-2" style="gap: 2rem;">
+                                <div class="flex-fill">
+                                    <label for="email_id" class="head-font d-flex">
+                                        <span>Email ID</span>
+                                        <span class="text-red ml-auto">
+                                        </span>
+                                    </label>
+                                    <input type="text" class="form-control  fs-12" id="email_id"
+                                        formControlName="emailName">
+                                </div>
+                                <div class="flex-fill">
+                                    <label for="dob_id" class="head-font d-flex">
+                                        <span>DOB</span>
+                                        <span class="text-red ml-auto">
+                                        </span>
+                                    </label>
+                                    <input type="text" class="form-control  fs-12" id="dob_id"
+                                        formControlName="dobName">
+                                </div>
+                            </div>
+                            <!-- <div class="mb-2">
+                                <label for="address_id" class="head-font d-flex">
+                                    <span>Address</span>
+                                </label>
+                                <textarea class="form-control fs-12" formControlName="addressName"
+                                    placeholder="Enter a short description about this property" id="address_id"
+                                    rows="4"></textarea>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2" style="gap: 2rem;">
+                                <div class="flex-fill">
+                                    <label for="pincode_id" class="head-font d-flex">
+                                        <span>Pincode</span>
+                                        <span class="text-red ml-auto">
+                                        </span>
+                                    </label>
+                                    <input type="text" class="form-control  fs-12" id="pincode_id"
+                                        formControlName="pincodeName">
+                                </div>
+                                <div class="flex-fill">
+                                    <label for="wallet_id" class="head-font d-flex">
+                                        <span>Wallet Address</span>
+                                        <span class="text-red ml-auto">
+                                        </span>
+                                    </label>
+                                    <input type="text" class="form-control  fs-12" id="wallet_id"
+                                        formControlName="walletName">
+                                </div>
+                            </div> -->
+                            <div class="mb-2">
+                                <label for="kyc_action_id" class="head-font d-flex">
+                                    <span>KYC Status</span>
+                                    <span class="text-red ml-auto">
+                                    </span>
+                                </label>
+                                <div *ngIf="this.kycListing.kyc_status == 'REQUESTED'"
+                                    class="d-flex justify-content-between" style="gap: 2rem;" id="kyc_action_id">
+                                    <div class="flex-fill">
+                                        <button class="btn p-2 with primary" (click)="confirmStatus('APPROVED')"
+                                            [disabled]="this.isPageLoader">APPROVE
+                                        </button>
+                                    </div>
+                                    <div class="flex-fill">
+                                        <button class="btn p-2 with danger" (click)="confirmStatus('REJECTED')"
+                                            [disabled]="this.isPageLoader"> REJECT
+                                        </button>
+                                    </div>
+                                </div>
+                                <div *ngIf="this.kycListing.kyc_status != 'REQUESTED'"
+                                    class="dashed-box dashed-box-contain d-flex align-items-center" id="kyc_action_id"
+                                    style="gap: 2rem; flex: 1">
+                                    <span
+                                        class="text-muted d-flex text-capitalize justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                                        KYC Action already done!</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="d-flex flex-column justify-content-between" style="min-width: 400px; flex: 1;">
+
+                            <div class="d-flex flex-column justify-content-between" style="gap: 2rem;">
+                                <div class="d-flex justify-content-between mb-2" style="gap: 2rem;">
+                                    <div class="flex-fill">
+                                        <label for="name_bank_id" class="head-font d-flex">
+                                            <span>Name (As per Bank recoreds)</span>
+                                            <span class="text-red ml-auto">
+                                            </span>
+                                        </label>
+                                        <input type="text" class="form-control  fs-12" id="name_bank_id"
+                                            formControlName="nameBankName">
+                                    </div>
+                                    <div class="flex-fill">
+                                        <label for="bank_id" class="head-font d-flex">
+                                            <span>Bank</span>
+                                            <span class="text-red ml-auto">
+                                            </span>
+                                        </label>
+                                        <input type="text" class="form-control  fs-12" id="bank_id"
+                                            formControlName="bankName">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2" style="gap: 2rem;">
+                                    <div class="flex-fill">
+                                        <label for="account_number_id" class="head-font d-flex">
+                                            <span>Account Number</span>
+                                            <span class="text-red ml-auto">
+                                            </span>
+                                        </label>
+                                        <input type="text" class="form-control  fs-12" id="account_number_id"
+                                            formControlName="accountNumberName">
+                                    </div>
+                                    <div class="flex-fill">
+                                        <label for="bank_code_id" class="head-font d-flex">
+                                            <span>Bank Code</span>
+                                            <span class="text-red ml-auto">
+                                            </span>
+                                        </label>
+                                        <input type="text" class="form-control  fs-12" id="bank_code_id"
+                                            formControlName="bankCodeName">
+                                    </div>
+
+                                </div>
+                                <div class="d-flex justify-content-between mb-2" style="gap: 2rem;">
+                                    <div class="flex-fill">
+                                        <label for="identity_id" class="head-font d-flex justify-content-between">
+                                            <span>Identity</span>
+                                            <span class="badge badge-warning fs-10">
+                                                {{this.kycListing.identity_type}}
+                                            </span>
+                                        </label>
+                                        <div class="dashed-box dashed-box-contain d-flex align-items-center"
+                                            id="identity_id" style="gap: 2rem; flex: 1">
+                                            <span class="d-flex flex-wrap pl-0 pr-0"
+                                                style="gap: 0.5rem;"
+                                                *ngFor="let docItem of identityDocument; index as pDocIndex">
+                                                <span class="badge badge-primary min-card c-pointer"
+                                                    (click)="openUrl(docItem)">
+                                                    Doc {{pDocIndex + 1}}
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-fill">
+                                        <label for="cc_leaf_id" class="head-font d-flex">
+                                            <span>Cancelled Cheque Leaf</span>
+                                            <span class="text-red ml-auto">
+                                            </span>
+                                        </label>
+                                        <div class="dashed-box dashed-box-contain d-flex align-items-center"
+                                            id="cc_leaf_id" style="gap: 2rem; flex: 1">
+                                            <span class="d-flex flex-wrap pl-0 pr-0"
+                                                style="gap: 0.5rem;"
+                                                *ngFor="let docItem of ccLeafDocument; index as pDocIndex">
+                                                <span class="badge badge-primary min-card c-pointer"
+                                                    (click)="openUrl(docItem)">
+                                                    Doc {{pDocIndex + 1}}
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        </div> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loader-parent" id="listingLoaderId" *ngIf="this.isPageLoader">
+    <div class="loader"></div>
+    <div class="mt-2 text-gold">Loading</div>
+</div>

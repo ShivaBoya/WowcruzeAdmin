@@ -1,0 +1,85 @@
+.nav-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: fixed;
+  background-color: var(--color-primary);
+  height: 60px;
+  top: 0;
+  z-index: 2;
+}
+
+.navbar {
+  padding: 0;
+  width: 97%;
+  margin-top: 0px;
+  border-style: hidden;
+}
+
+
+.nav-item {
+  margin-left: 10%;
+  // margin-right: 5%;
+}
+
+.navbar-nav {
+  display: flex;
+}
+
+.navbar-brand {
+  margin-right: 10%;
+}
+.navbar-brand img{
+  width: 70%;
+}
+
+.navbar-light .navbar-toggler-icon {
+  filter: invert(1);
+  border: 1px solid var(--color-grey-light);
+}
+
+.nav-link {
+  width: max-content;
+  color: var(--color-white) !important;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.nav-item > a:hover{
+  color: var(--color-gold-hover) !important;
+}
+
+.nav-item .active {
+  color: var(--color-gold) !important;
+}
+
+#ddProfileIcon {
+  cursor: pointer;
+}
+
+.top-nav-dd {
+  // margin-top: 1rem;
+  right: 0;
+  left: auto;
+  float: right;
+  position: absolute;
+  overflow: clip;
+  font-size: 12px;
+}
+
+@media only screen and (max-width:992px) {
+  .nav-container {
+      height: auto;
+      min-height: 60px;
+  }
+  .top-nav-dd {
+      right: auto;
+  }
+  .navbar{
+      padding: 10px 0;
+  }
+  .top-nav-dd {
+      margin-top: 0rem;
+  }
+}

@@ -1,0 +1,171 @@
+<div class="d-flex justify-content-start flex-column align-items-center custom-container">
+  <div class="col-12 p-0 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="title-font">ASSET LISTINGS</div>
+      <span class="badge badge-gold-bold" routerLink="/add-property">
+        Add Asset
+      </span>
+    </div>
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap flex-control">
+      <div class="badge badge-danger-bold filter-cls text-f c-pointer" (click)="openFilter()">
+        <span>
+          Filters
+          <i class="fa fa-filter ml-1"></i>
+        </span>
+      </div>
+      <div class="d-flex justify-content-end align-items-center flex-wrap">
+        <div class="fs-12 date-font mr-2" *ngIf=" this.isFromDateIsLessThenToDate"> 'From date' should be less then 'To
+          date'</div>
+        <div class="fs-12 date-font mr-2" *ngIf="this.isDateEmpty"> 'From date' or 'To date' cannot be empty</div>
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+          <div class="fs-12 mr-2">Date Filter :</div>
+          <div class="d-flex justify-content-between">
+            <input class="c-pointer" name="start" id="startDateID" [(ngModel)]="startDate" style="width: min-content"
+              (ngModelChange)="filterDate()" type="date" min="1990-01-01" max="3000-12-31" placeholder="dd-mm-yyyy"
+              class="form-control fs-12 ng-untouched ng-pristine ng-valid" ng-reflect-name="start"
+              ng-reflect-model="2023-05-09" />
+            <hr style="width: 1rem" />
+            <input class="c-pointer" name="end" id="endDateID" [(ngModel)]="endDate" style="width: min-content"
+              (ngModelChange)="filterDate()" type="date" min="1990-01-01" max="3000-12-31" placeholder="dd-mm-yyyy"
+              class="form-control fs-12 ng-untouched ng-pristine ng-valid" ng-reflect-name="end"
+              ng-reflect-model="2023-05-16" />
+            <i (click)="fetchProperties()"
+              class="badge badge-primary d-flex c-pointer align-items-center justify-content-center ml-2 fa fa-search fs-12"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="position-relative" style="height: 70dvh;">
+      <table class="table table-responsive table-striped-columns mb-3 position-absolute" id="property_listing_table_id">
+        <thead class="table-dark">
+          <tr>
+            <th class="table-head-font">Sl.No.</th>
+            <th class="table-head-font">Listing Date</th>
+            <th class="table-head-font">Asset ID</th>
+            <th class="table-head-font property-name">Asset Name</th>
+            <th class="table-head-font">Sold Tokens</th>
+            <th class="table-head-font">Percentage Sold</th>
+            <th class="table-head-font">Price Per Token</th>
+            <th class="table-head-font">Sale Status</th>
+            <th class="table-head-font">SPV Status</th>
+            <th class="table-head-font">Token Status</th>
+            <th class="table-head-font">Resale Status</th>
+            <!-- <th class="table-head-font">Action</th> -->
+          </tr>
+        </thead>
+        <tbody class="table-font" *ngIf="assetListings.length > 0">
+          <tr (click)="openDroupDown($event, property.asset_id)" id="dropdownMenuButton" mdbDropdownToggle
+            class="c-pointer" *ngFor="
+          let property of assetListings
+            | paginate : { itemsPerPage: tableSize, currentPage: page };
+          let i = index
+        ">
+            <td class="table-font">{{ (page - 1) * tableSize + i + 1 }}</td>
+            <td class="table-font">
+              {{ property.listing_date | date : "yyyy-MM-dd" }}
+            </td>
+            <td class="table-font">{{ property.asset_id }}</td>
+            <td class="table-font property-name">{{ property.asset_name }}</td>
+            <td class="table-font">
+              {{ property.sold_tokens || 0 }}/{{ property.total_tokens }}
+            </td>
+            <td class="table-font">
+              {{
+              ((property.sold_tokens / property.total_tokens) * 100).toFixed(2)
+              }}&#37;
+            </td>
+            <td class="table-font">
+              {{ property.price_per_token }} {{ property.fiat_label }}
+            </td>
+            <td class="table-font">
+              <span class="{{ getStatusColor(property.sale_status, 'SALE') }}">
+                {{ getStatusText(property.sale_status, "SALE") || "--" }}
+              </span>
+            </td>
+            <td class="table-font">
+              <span class="{{ getStatusColor(property.SPV_status, 'SPV') }}">
+                {{ getStatusText(property.SPV_status, "SPV") || "--" }}
+              </span>
+            </td>
+            <td class="table-font">
+              <span class="{{ getStatusColor(property.NFT_status, 'NFT') }}">{{
+                getStatusText(property.NFT_status, "NFT") || "--"
+                }}</span>
+            </td>
+            <td class="table-font">
+              <span class="{{ getStatusColor(property.resale_status, 'RESALE') }}">{{
+                getStatusText(property.resale_status, "RESALE") || "--"
+                }}</span>
+            </td>
+            <!-- <td class="table-font" style="text-align: center">
+          <div mdbDropdown class="dropdown">
+            <i
+              class="fa fa-bars c-pointer"
+              id="dropdownMenuButton"
+              mdbDropdownToggle
+            ></i>
+            <ul
+              mdbDropdownMenu
+              class="dropdown-menu dropdown-p"
+              aria-labelledby="dropdownMenuButton"
+            >
+              <li>
+                <a
+                  class="dropdown-item fs-12 c-pointer"
+                  (click)="sendPropertyDetails(property.property_id)"
+                  >View Property</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item fs-12 c-pointer"
+                  (click)="viewBuyersDetails(property.property_id)"
+                  >View Buyers</a
+                >
+              </li>
+            </ul>
+          </div>
+        </td> -->
+          </tr>
+        </tbody>
+      </table>
+      <div class="dropdown" [style.display]="(isViewPropertyVisible || isViewBuyersVisible) ? 'block' : 'none'" id="detailsDroupDown">
+        <ul mdbDropdown class="dropdown-menu" aria-labelledby="detailsDroupDown">
+          <li>
+            <a class="dropdown-item fs-12 c-pointer" (click)="sendPropertyDetails()">View Asset</a>
+          </li>
+          <li>
+            <a class="dropdown-item fs-12 c-pointer" (click)="viewBuyersDetails()">View Investors</a>
+          </li>
+        </ul>
+      </div>      
+
+      <div class="no-data" *ngIf="assetListings.length == 0">
+        No data available for the selected filter
+      </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-auto flex-wrap flex-control pagination-align">
+      <div class="d-flex fs-12 justify-content-between align-items-center">
+        <span class="mr-2" style="white-space: nowrap">Number Of Rows:</span>
+        <div mdbDropdown class="dropdown">
+          <span mdbDropdownToggle id="dd-number-of-rows-id" class="badge badge-primary c-pointer">{{ tableSize }}<i
+              class="ml-3 fa fa-angle-down"></i></span>
+          <ul mdbDropdownMenu class="dropdown-menu mb-2" style="min-width: 4.2rem" aria-labelledby="dd-number-of-rows-id">
+            <li *ngFor="let item of numberOfRows" class="c-pointer">
+              <a class="dropdown-item text-center fs-12" (click)="setNumberOfRows(item)">{{ item }}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="pagination">
+        <pagination-controls (pageChange)="page = $event"></pagination-controls>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+<div class="loader-parent" id="listingLoaderId" style="display: none">
+  <div class="loader"></div>
+  <div class="mt-2 text-gold">Loading</div>
+</div>

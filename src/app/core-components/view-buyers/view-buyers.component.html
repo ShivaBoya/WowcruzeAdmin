@@ -1,0 +1,113 @@
+<div class="d-flex justify-content-start flex-column align-items-center custom-container">
+    <div class="col-12 p-0 mt-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="title-font"> INVESTOR'S LISTINGS </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap flex-control">
+            <div class="badge badge-danger-bold filter-cls text-f c-pointer" (click)="openFilter()">
+                <span>
+                    Filters
+                    <i class="fa fa-filter ml-1"></i>
+                </span>
+            </div>
+            <div class="d-flex justify-content-end align-items-center flex-wrap">
+                <div class="fs-12 date-font mr-2" *ngIf=" this.isFromDateIsLessThenToDate"> 'From date' should be less
+                    then 'To date'</div>
+                <div class="fs-12 date-font mr-2" *ngIf="this.isDateEmpty"> 'From date' or 'To date' cannot be empty
+                </div>
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="fs-12 mr-2"> Date Filter : </div>
+                    <div class="d-flex justify-content-between">
+                        <input class="c-pointer" name="start" id="startDateID" [(ngModel)]="startDate"
+                            style="width: min-content;" (ngModelChange)="filterDate()" type="date" min="1990-01-01"
+                            max="3000-12-31" placeholder="dd-mm-yyyy"
+                            class="form-control fs-12 ng-untouched ng-pristine ng-valid" ng-reflect-name="start"
+                            ng-reflect-model="2023-05-09">
+                        <hr style="width: 1rem;">
+                        <input class="c-pointer" name="end" id="endDateID" [(ngModel)]="endDate"
+                            style="width: min-content;" (ngModelChange)="filterDate()" type="date" min="1990-01-01"
+                            max="3000-12-31" placeholder="dd-mm-yyyy"
+                            class="form-control fs-12 ng-untouched ng-pristine ng-valid" ng-reflect-name="end"
+                            ng-reflect-model="2023-05-16">
+                        <i (click)="fetchBuyersByDate()"
+                            class="badge badge-primary d-flex c-pointer align-items-center justify-content-center ml-2 fa fa-search fs-12"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <table class="table table-responsive table-striped-columns mb-3" id="property_listing_table_id">
+            <thead class="table-dark">
+                <tr>
+                    <th class="table-head-font">Sl.No.</th>
+                    <th class="table-head-font">Date of Purchase</th>
+                    <th class="table-head-font">Asset ID</th>
+                    <th class="table-head-font property-name">Asset Name</th>
+                    <th class="table-head-font">Investor's Name</th>
+                    <th class="table-head-font">Owned Shares</th>
+                    <th class="table-head-font">Owned Price </th>
+                    <!-- <th class="table-head-font">Token Claim Status</th> -->
+                </tr>
+            </thead>
+            <tbody class="table-font">
+                <tr (click)="routeToKYCProfile(buyer.kyc_id, buyer.fk_ua_user_id)"
+                    *ngFor="let buyer of BuyerListing | paginate: { itemsPerPage: tableSize, currentPage: page }; let i = index">
+                    <td class="table-font">{{i+1}}</td>
+                    <td class="table-font">{{getTransformedDateTime(buyer.purchased_date)}}</td>
+                    <td class="table-font">{{buyer.asset_id}}</td>
+                    <td class="table-font property-name">{{buyer.asset_name}}</td>
+                    <!-- <td class="table-font">{{getUserName(buyer) || '--'}}</td> -->
+                    <td class="table-font">{{buyer.name}}</td>
+                    <td class="table-font">{{buyer.number_of_owned_tokens}}</td>
+                    <td class="table-font">{{buyer.purchased_price }}</td>
+                    <!-- <td class="table-font" *ngIf="buyer.coin_status === 'MINTED'">
+                        <span class="badge badge-success alignment fs-10">Claimed
+                        </span>
+                    </td>
+                    <td class="table-font" *ngIf="buyer.coin_status === 'MINT_NOW'">
+                        <span class="badge badge-danger alignment fs-10">Not Claimed
+                        </span>
+                    </td>
+                    <td class="table-font" *ngIf="buyer.coin_status === 'MINTING_NOT_AVAILABLE'">
+                        <span class="badge badge-primary alignment fs-10">Minting Unavailable
+                        </span>
+                    </td>
+                    <td class="table-font" *ngIf="buyer.coin_status === 'MINTING_INPROGRESS'">
+                        <span class="badge badge-warning alignment fs-10">Claim In Progress
+                        </span>
+                    </td> -->
+                    <!-- <td class="table-font">
+                        <span class="fs-12 c-pointer dashed-box" (click)="routeToKYCProfile(buyer.kyc_id)">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        </span>
+                    </td> -->
+                </tr>
+            </tbody>
+            <div class="no-data" *ngIf="BuyerListing.length == 0">
+                No data available
+            </div>
+        </table>
+        <div class="d-flex justify-content-between align-items-center mb-auto flex-wrap flex-control pagination-align">
+            <div class="d-flex fs-12 justify-content-between align-items-center">
+                <span class="mr-2" style="white-space: nowrap;">Number Of Rows:</span>
+                <div mdbDropdown class="dropdown">
+                    <span mdbDropdownToggle id="dd-number-of-rows-id"
+                        class="badge badge-primary c-pointer">{{tableSize}}<i class="ml-3 fa fa-angle-down"></i></span>
+                    <ul mdbDropdownMenu class="dropdown-menu mb-2" style="min-width: 4.2rem;"
+                        aria-labelledby="dd-number-of-rows-id">
+                        <li *ngFor="let item of numberOfRows" class="c-pointer">
+                            <a class="dropdown-item text-center fs-12" (click)="setNumberOfRows(item)">{{item}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pagination">
+                <pagination-controls (pageChange)="page = $event"></pagination-controls>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="loader-parent" id="listingLoaderId" *ngIf="this.isPageLoader">
+    <div class="loader"></div>
+    <div class="mt-2 text-gold">Loading</div>
+</div>

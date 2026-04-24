@@ -1,0 +1,2151 @@
+<div class="custom-container">
+  <div class="mt-2">
+    <div class="title-font d-flex justify-content-between align-items-center mb-3">
+      <span *ngIf="!this.isUpdateDetails && !this.isViewDetails">ADD ASSET</span>
+      <span *ngIf="this.isViewDetails || this.isUpdateDetails">ASSET DETAILS</span>
+      <span class="badge badge-danger fs-14" *ngIf="stepOneForm.invalid && isFormOneSubmitted">
+        <i class="fa fa-warning text-red mr-2"></i> Please fill all the field
+        with valid values in primary details!
+      </span>
+      <span class="badge badge-danger fs-14" *ngIf="stepTwoForm.invalid && isFormTwoSubmitted">
+        <i class="fa fa-warning text-red mr-2"></i> Please fill all the field
+        with valid values in Comprehensive Details!
+      </span>
+      <div class="title-font d-flex justify-content-between align-items-end" style="gap: 1rem">
+        <button class="btn-gold fs-12 text-uppercase pl-4 pr-4 button-padding" type="submit"
+          *ngIf="!this.isUpdateDetails && !this.isViewDetails"
+          (click)="submitModal()">
+          Submit
+        </button>
+        <button class="btn-gold fs-12 text-uppercase pl-4 pr-4 button-padding" type="submit"
+          *ngIf="this.isUpdateDetails" [disabled]="stepOneForm.invalid || this.isPageLoader" (click)="updateModal()">
+          Submit
+        </button>
+        <button class="btn-gold fs-12 text-uppercase pl-4 pr-4 button-padding" type="submit"
+          *ngIf="this.isUpdateDetails" [disabled]="this.isPageLoader" (click)="cancelModifyProperty()">
+          Cancel
+        </button>
+      </div>
+
+      <button class="btn-gold fs-12 text-uppercase pl-4 pr-4 button-padding" type="submit" *ngIf="this.isViewDetails"
+        [disabled]="stepOneForm.invalid || this.isPageLoader" (click)="updateProperty()">
+        Update
+      </button>
+    </div>
+    <hr />
+    <div class="d-flex justify-content-center flex-wrap" style="gap: 2rem">
+      <div class="w-100 justify-content-between align-items-center d-flex hr-div">
+        <ul class="nav nav-tabs">
+          <li class="nav-item c-pointer">
+            <a class="nav-link step-header" [class.active]="currentFormPage === 1" (click)="promptStep1()">Primary
+              Details</a>
+          </li>
+          <li class="nav-item c-pointer">
+            <a class="nav-link step-header" [class.active]="currentFormPage === 2" (click)="promptStep2()">Comprehensive
+              Details</a>
+          </li>
+        </ul>
+      </div>
+      <div style="width: 100%" class="card-class">
+        <div *ngIf="currentFormPage === 1" class="card p-3">
+          <form [formGroup]="stepOneForm" (ngSubmit)="promptStep1()" class="d-flex flex-wrap justify-content-between"
+            style="gap: 2rem">
+            <div class="d-flex flex-column justify-content-between" style="min-width: 400px; flex: 1">
+
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="property_name_id" class="head-font d-flex">
+                    <span>Asset Name<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                          stepOneForm.get('assetName')!.invalid &&
+                          (stepOneForm.get('assetName')!.dirty ||
+                            isFormOneSubmitted)
+                        ">
+                      Invalid asset Name.
+                    </span>
+                  </label>
+                  <input type="text" class="form-control" id="property_name_id" formControlName="assetName" />
+                </div>
+                <div class="flex-fill">
+                  <label for="property_type_id" class="head-font d-flex">
+                    <span>Asset Type<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('assetTypeName')!.invalid &&
+                        (stepOneForm.get('assetTypeName')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      Please select a asset type.
+                    </span>
+                  </label>
+                  <div (click)="openDroupDown($event, 'ASSET_TYPE')" class="dropdown-container dd-listner"
+                    id="dropdownMenuButtonAssetType">
+                    <input class="form-control dd-listner c-pointer read" id="property_type_id"
+                      formControlName="assetTypeName" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownAssetType">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let type of assetTypes">
+                          <span class="flex-fill dd-listner"
+                            (mousedown)="onChangeAssetType($event, type.asset_type_value)">
+                            {{ type.asset_type_value }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-2">
+                <label for="property_description_id" class="head-font d-flex">
+                  <span>Asset Description<span class="red">*</span></span>
+                  <span class="text-red ml-auto" *ngIf="
+                      stepOneForm.get('assetDescriptionName')!.invalid &&
+                      (stepOneForm.get('assetDescriptionName')!.dirty ||
+                        isFormOneSubmitted)
+                    ">
+                    Please add a describe about the asset
+                  </span>
+                  <!-- <span class="text-red ml-auto" *ngIf="trimValidator(stepOneForm.controls['assetDescriptionName'].value)
+                    ">
+                    Please provide a description with valid spaces.
+                  </span> -->
+                </label>
+                <textarea class="form-control fs-12" formControlName="assetDescriptionName"
+                  placeholder="Enter a short description about this property" id="property_description_id"
+                  rows="4"></textarea>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label for="inputCity" class="head-font d-flex">
+                      <span>Country<span class="red">*</span></span></label>
+                    <span style=" margin-right: 2%; font-size: 12px; font-weight: 500;" class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('countryName')!.invalid &&
+                        (stepOneForm.get('countryName')!.dirty ||
+                          isFormOneSubmitted)">
+                      Please select a Country
+                    </span>
+                    <!-- <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" data-toggle="modal"
+                      data-target="#cityLocationModalId" (click)="addCityLocation('CITY')">
+                      <span class="fs-10">Add</span>
+                    </div> -->
+                  </div>
+                  <!-- <div class="dropdown-container">
+                    <select (change)="onChangeCity($event,'' )" id="inputCity" formControlName="cityName"
+                      class="form-control">
+                      <option *ngFor="
+                          let cityItem of cityDetails
+                        " value="{{ cityItem.city_name }}" [value]="cityItem.city_name"
+                        [selected]="stepOneForm.controls['cityName'].value == cityItem.city_name">
+                      </option>
+                    </select>
+                    <span class="dropdown-chevron">&#9662;</span>
+                  </div> -->
+                  <div (click)="openDroupDown($event, 'COUNTRY')" class="dropdown-container dd-listner" id="dropdownMenuButtonCountry">
+                    <input class="form-control dd-listner c-pointer read" id="inputCountry" formControlName="countryName" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownCountry">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let countryItem of countries">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeCountry($event, countryItem.label)">
+                            {{ countryItem.label }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-fill">
+                  <!-- <label for="inputLocation" class="head-font d-flex">
+                    <span>Location<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('locationName')!.invalid &&
+                        (stepOneForm.get('locationName')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      Please select a location
+                    </span>
+                  </label> -->
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label for="inputCity" class="head-font d-flex">
+                      <span>State<span class="red">*</span></span></label>
+                    <span style=" margin-right: 2%; font-size: 12px; font-weight: 500;" class="text-red ml-auto" *ngIf="
+                      stepOneForm.get('stateName')!.invalid &&
+                      (stepOneForm.get('stateName')!.dirty ||
+                        isFormOneSubmitted) 
+                    ">
+                      Please select a State
+                    </span>
+                    <!-- <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" data-toggle="modal"
+                      data-target="#cityLocationModalId" (click)="addCityLocation('LOCATION')">
+                      <span class="fs-10">Add</span>
+                    </div> -->
+                  </div>
+                  <!-- <div class="dropdown-container">
+                    <select id="inputLocation" formControlName="locationName" class="form-control">
+                      <option *ngFor="
+                          let locationItem of locationDetails
+                        " value="{{ locationItem.location_name }}"
+                        [selected]="stepOneForm.controls['locationName'].value == locationItem.location_name">
+                        {{ locationItem.location_name }}
+                      </option>
+                    </select>
+                    <span class="dropdown-chevron">&#9662;</span>
+                  </div> -->
+                  <div (click)="openDroupDown($event, 'STATE')" class="dropdown-container dd-listner-location" id="dropdownMenuButtonLocation">
+                    <input class="form-control dd-listner-location read" id="inputState" formControlName="stateName" readonly />
+                    <span class="dropdown-chevron dd-listner-location">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownState">
+                      <ul class="mat-scroll dd-listner-location">
+                        <li class="dropdown-item dd-listner-location fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let item of states">
+                          <span class="flex-fill dd-listner-location" (mousedown)="onChangeState($event, item.label)">
+                            {{ item.label }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label for="inputCity" class="head-font d-flex">
+                      <span>City<span class="red">*</span></span></label>
+                    <span style=" margin-right: 2%; font-size: 12px; font-weight: 500;" class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('cityName')!.invalid &&
+                        (stepOneForm.get('cityName')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      Please select a city
+                    </span>
+                    <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" data-toggle="modal"
+                      data-target="#cityLocationModalId" (click)="addCityLocation('CITY')"   [ngClass]="{ 'disabled': isStateSelected }">
+                      <span class="fs-10">Add</span>
+                    </div>
+                  </div>
+                  <!-- <div class="dropdown-container">
+                    <select (change)="onChangeCity($event,'' )" id="inputCity" formControlName="cityName"
+                      class="form-control">
+                      <option *ngFor="
+                          let cityItem of cityDetails
+                        " value="{{ cityItem.city_name }}" [value]="cityItem.city_name"
+                        [selected]="stepOneForm.controls['cityName'].value == cityItem.city_name">
+                      </option>
+                    </select>
+                    <span class="dropdown-chevron">&#9662;</span>
+                  </div> -->
+                  <div (click)="openDroupDown($event, 'CITY')" class="dropdown-container dd-listner" id="dropdownMenuButtonCity">
+                    <input class="form-control dd-listner c-pointer read" id="inputCity" formControlName="cityName" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDown">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let cityItem of cityDetails">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeCity($event, cityItem.label)">
+                            {{ cityItem.label }}
+                          </span>
+                          <span class="remove-icon dd-listner" (click)="removeCityLocation($event, cityItem.label, 'CITY', cityItem.location_id)">X</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-fill">
+                  <!-- <label for="inputLocation" class="head-font d-flex">
+                    <span>Location<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('locationName')!.invalid &&
+                        (stepOneForm.get('locationName')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      Please select a location
+                    </span>
+                  </label> -->
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label for="inputCity" class="head-font d-flex">
+                      <span>Location<span class="red">*</span></span></label>
+                    <span style=" margin-right: 2%; font-size: 12px; font-weight: 500;" class="text-red ml-auto" *ngIf="
+                      stepOneForm.get('locationName')!.invalid &&
+                      (stepOneForm.get('locationName')!.dirty ||
+                        isFormOneSubmitted) 
+                    ">
+                      Please select a location
+                    </span>
+                    <div *ngIf="!this.isViewDetails"  [ngClass]="{ 'disabled': isCitySelected }" class="badge badge-primary-bold" data-toggle="modal"
+                      data-target="#cityLocationModalId" (click)="addCityLocation('LOCATION')">
+                      <span class="fs-10">Add</span>
+                    </div>
+                  </div>
+                  <!-- <div class="dropdown-container">
+                    <select id="inputLocation" formControlName="locationName" class="form-control">
+                      <option *ngFor="
+                          let locationItem of locationDetails
+                        " value="{{ locationItem.location_name }}"
+                        [selected]="stepOneForm.controls['locationName'].value == locationItem.location_name">
+                        {{ locationItem.location_name }}
+                      </option>
+                    </select>
+                    <span class="dropdown-chevron">&#9662;</span>
+                  </div> -->
+                  <div (click)="openDroupDown($event, 'LOCATION')" class="dropdown-container dd-listner-location" id="dropdownMenuButtonLoc">
+                    <input class="form-control dd-listner-location read" id="inputLocation" formControlName="locationName" readonly />
+                    <span class="dropdown-chevron dd-listner-location">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownLocation">
+                      <ul class="mat-scroll dd-listner-location">
+                        <li class="dropdown-item dd-listner-location fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let locationItem of locationDetails">
+                          <span class="flex-fill dd-listner-location" (mousedown)="onChangeLocation($event, locationItem.label)">
+                            {{ locationItem.label }}
+                          </span>
+                          <span class="remove-icon dd-listner-location" (click)="removeCityLocation($event, locationItem.label, 'LOCATION', locationItem.location_id)">X</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="total_share_id" class="head-font d-flex">
+                    <span>Total Tokens<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('totalSharesName')!.invalid &&
+                        (stepOneForm.get('totalSharesName')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      <span *ngIf="
+                          stepOneForm.controls['totalSharesName'].hasError(
+                            'required'
+                          )
+                        ">Please enter a valid number</span>
+                      <span *ngIf="
+                          stepOneForm.controls['totalSharesName'].hasError(
+                            'min'
+                          )
+                        ">
+                        Min value must be >= 0</span>
+                    </span>
+                  </label>
+                  <input type="number" *ngIf="!this.isUpdateDetails" formControlName="totalSharesName"
+                    class="form-control" (input)="syncPropertyPrice()" id="total_share_id" min="1" readonly/>
+                  <input *ngIf="this.isUpdateDetails" type="number" formControlName="totalSharesName"
+                    [class.disable-total]="(this.soldShares !== 0 && this.soldShares !== null)" class="form-control"
+                    (input)="syncPropertyPrice()" id="total_share_id" min="1" readonly/>
+                </div>
+                <div class="flex-fill">
+                  <label for="limit_per_share_id" class="head-font d-flex">
+                    <span>Limit Per Token<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('limitPerShareName')!.invalid &&
+                        (stepOneForm.get('limitPerShareName')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      <span *ngIf="
+                          stepOneForm.controls['limitPerShareName'].hasError(
+                            'required'
+                          )
+                        ">
+                        Please enter a valid number</span>
+                      <span *ngIf="
+                          stepOneForm.controls['limitPerShareName'].hasError(
+                            'min'
+                          )
+                        ">
+                        Min value must be >= 0</span>
+                      <span *ngIf="
+                          stepOneForm.controls['limitPerShareName'].hasError(
+                            'max'
+                          )
+                        ">Max value must be <= total shares</span>
+                      </span>
+                  </label>
+                  <input type="number" formControlName="limitPerShareName" class="form-control" id="limit_per_share_id"
+                    min="1" max="{{ stepOneForm.get('totalSharesName')!.value }}" />
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-grow-1">
+                  <label for="property_price_id" class="head-font d-flex">
+                    <span>Asset Price<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('assetPriceName')!.invalid &&
+                        (stepOneForm.get('assetPriceName')!.dirty ||
+                          isFormOneSubmitted) ">
+                      <span *ngIf="
+                          stepOneForm.controls['assetPriceName'].hasError('required') ">
+                        Please enter a valid number</span>
+                      <span *ngIf="stepOneForm.controls['assetPriceName'].hasError('min')">
+                        Min value must be >= 0</span>
+                    </span>
+                  </label>
+                  <input type="number" formControlName="assetPriceName" class="form-control"
+                    (input)="syncPropertyPrice()" id="property_price_id" min="1" />
+                </div>
+                <div class="flex-grow-1">
+                  <label for="price_per_share_id" class="head-font d-flex">
+                    <span>Price Per Token<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('pricePerShareName')!.invalid &&
+                        (stepOneForm.get('pricePerShareName')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      <span *ngIf="
+                          stepOneForm.controls['pricePerShareName'].hasError(
+                            'required'
+                          ) || 1 / 0 == stepOneForm.controls['assetPriceName'].value /
+                              stepOneForm.controls['totalSharesName'].value ">
+                        Please enter a valid number</span>
+                      <span *ngIf="(stepOneForm.controls['pricePerShareName'].hasError(
+                        'max'
+                      ) ||
+                      (stepOneForm.controls['pricePerShareName'].hasError(
+                        'min'
+                      )) &&
+                          (stepOneForm.controls['assetPriceName'].value /
+                            stepOneForm.controls['totalSharesName'].value) >= 1)
+                    ">
+                        Price per share can not be less then 1
+                      </span>
+                      <span *ngIf="
+                          stepOneForm.controls['pricePerShareName'].hasError(
+                            'max'
+                          ) ||
+                          (stepOneForm.controls['pricePerShareName'].hasError(
+                            'min'
+                          ) &&
+                            1 / 0 !=
+                              stepOneForm.controls['assetPriceName'].value /
+                                stepOneForm.controls['totalSharesName'].value)
+                        ">
+                        Value must be equal to
+                        {{
+                        stepOneForm.controls["assetPriceName"].value /
+                        stepOneForm.controls["totalSharesName"].value
+                        }}</span>
+                    </span>
+                  </label>
+                  <input readonly type="number" formControlName="pricePerShareName" class="form-control"
+                    id="price_per_share_id" min="0" />
+                </div>
+              </div>
+              <div class="d-flex justify-content-between " style="gap: 2rem">
+
+                <div class="flex-fill">
+                  <label for="property_listing_date_id" class="head-font d-flex">
+                    <span>Asset Listing Date<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('assetListingDateName')!.invalid &&
+                        (stepOneForm.get('assetListingDateName')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      <span *ngIf="
+                          stepOneForm.controls[
+                            'assetListingDateName'
+                          ].hasError('required')
+                        ">Please enter a valid date</span>
+                    </span>
+                  </label>
+                  <input type="date" min="{{ todayDate }}" class="form-control" id="property_listing_date_id"
+                    formControlName="assetListingDateName" />
+                </div>
+                <div class="flex-fill">
+                  <label for="currency_type_id" class="head-font d-flex">
+                    <span>Currency Type<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                    stepOneForm.get('currencyTypeName')!.invalid &&
+                        (stepOneForm.get('currencyTypeName')!.dirty ||
+                        isFormOneSubmitted)
+                      ">
+                      Please select a Currency type.
+                    </span>
+                  </label>
+                  <div (click)="openDroupDown($event, 'CURRENCY')" class="dropdown-container dd-listner" id="dropdownMenuButtonCurrency">
+                    <input class="form-control dd-listner c-pointer read" id="currency_type_id" formControlName="currencyTypeName" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownCurrency">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let currencyinfo of assetsCurrencies">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeCurrency($event, currencyinfo.currency_name)">
+                            {{ currencyinfo.currency_name }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-column justify-content-between" style="min-width: 400px; flex: 1">
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label for="inputCity" class="head-font d-flex">
+                      <span>Brand<span class="red">*</span></span></label>
+                    <span style=" margin-right: 2%; font-size: 12px; font-weight: 500;" class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('brandType')!.invalid &&
+                        (stepOneForm.get('brandType')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      Please select a brand
+                    </span>
+                    <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" data-toggle="modal"
+                      data-target="#cityLocationModalId" (click)="addCityLocation('BRAND')" >
+                      <span class="fs-10">Add</span>
+                    </div>
+                  </div>
+                  <div (click)="openDroupDown($event, 'BRAND')" class="dropdown-container dd-listner" id="dropdownMenuButtonBrand">
+                    <input class="form-control dd-listner c-pointer read" id="inputBrand" formControlName="brandType" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownBrand">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let item of assetsBrands">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeBrand($event, item.label)">
+                            {{ item.label }}
+                          </span>
+                          <span class="remove-icon dd-listner" (click)="removeBrand($event, 'BRAND', item.brand_id)">X</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-fill">
+                 
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label for="inputCity" class="head-font d-flex">
+                      <span>Sub brand<span class="red">*</span></span></label>
+                    <span style=" margin-right: 2%; font-size: 12px; font-weight: 500;" class="text-red ml-auto" *ngIf="
+                      stepOneForm.get('subBrandType')!.invalid &&
+                      (stepOneForm.get('subBrandType')!.dirty ||
+                        isFormOneSubmitted) 
+                    ">
+                      Please select a sub brand
+                    </span>
+                    <div *ngIf="!this.isViewDetails"  [ngClass]="{ 'disabled': isBrandSelected }" class="badge badge-primary-bold" data-toggle="modal"
+                      data-target="#cityLocationModalId" (click)="addCityLocation('SUBBRAND')">
+                      <span class="fs-10">Add</span>
+                    </div>
+                  </div>
+                 
+                  <div (click)="openDroupDown($event, 'SUBBRAND')" class="dropdown-container dd-listner-location" id="dropdownMenuButtonSubBrand">
+                    <input class="form-control dd-listner-location read" id="inputSubBrand" formControlName="subBrandType" readonly />
+                    <span class="dropdown-chevron dd-listner-location">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownSubbrand">
+                      <ul class="mat-scroll dd-listner-location">
+                        <li class="dropdown-item dd-listner-location fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let brand of subBrandeatils">
+                          <span class="flex-fill dd-listner-location" (mousedown)="onChangeSubBrand($event, brand.label)">
+                            {{ brand.label }}
+                          </span>
+                          <span class="remove-icon dd-listner-location" (click)="removeBrand($event, 'SUBBRAND', brand.brand_id)">X</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="credit_Hour_per_Token_id" class="head-font d-flex">
+                    <span>Credit Hour Per Token
+                      <span class="red">*</span></span>
+                      <span class="text-red ml-auto" *ngIf="
+                      stepOneForm.get('creditHourPerToken')!.invalid &&
+                      (stepOneForm.get('creditHourPerToken')!.dirty ||
+                        isFormOneSubmitted)
+                    ">
+                    Please Enter A Valid Number
+                </span>
+                  </label>
+                  <input type="number" formControlName="creditHourPerToken" class="form-control"
+                    id="credit_Hour_per_Token_id" readonly/>
+                </div>
+                <div class="flex-fill">
+                  <label for="milage_id" class="head-font d-flex">
+                    <span>Mileage
+                      <span class="red">*</span></span>
+                      <span class="text-red ml-auto" *ngIf="
+                      stepOneForm.get('milage')!.invalid &&
+                      (stepOneForm.get('milage')!.dirty ||
+                        isFormOneSubmitted)
+                    ">
+                    Please Enter A Valid Number
+                </span>
+                  </label>
+                  <input type="number" formControlName="milage" class="form-control"
+                    id="milage_id" />
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="escrow_id_name" class="head-font d-flex">
+                    <span>Escrow Id<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                          stepOneForm.get('escrowIdName')!.invalid &&
+                          (stepOneForm.get('escrowIdName')!.dirty ||
+                            isFormOneSubmitted)
+                        ">
+                      Invalid Escrow Id.
+                    </span>
+                  </label>
+                  <input type="text" class="form-control" id="escrow_id_name" formControlName="escrowIdName" />
+                </div>
+                <div class="flex-fill">
+                  <label for="escrow_id_email" class="head-font d-flex">
+                    <span>Escrow Email<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                          stepOneForm.get('escrowIdEmail')!.invalid &&
+                          (stepOneForm.get('escrowIdEmail')!.dirty ||
+                            isFormOneSubmitted) || isCorrectEmail
+                        ">
+                      Invalid Escrow Email.
+                    </span>
+                  </label>
+                  <input type="email" class="form-control" id="escrow_id_email" formControlName="escrowIdEmail" (keydown)="validateEmailInput($event)"/>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="high_Performance_Engine_id" class="head-font d-flex">
+                    <span>High Performance Engine in cc
+                      <span class="red">*</span>
+                    </span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('highPerformanceEngine')!.invalid &&
+                        (stepOneForm.get('highPerformanceEngine')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                        Please enter a valid number</span>
+                      
+                  </label>
+                  <input type="number" formControlName="highPerformanceEngine" class="form-control"
+                    id="high_Performance_Engine_id" />
+                </div>
+                <div class="flex-fill">
+                  <label for="assetCategory_id" class="head-font d-flex">
+                    <span>Asset Category<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('assetCategoryName')!.invalid &&
+                        (stepOneForm.get('assetCategoryName')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      Please select a asset category.
+                    </span>
+                  </label>
+                  <div (click)="openDroupDown($event, 'CATEGORY')" class="dropdown-container dd-listner" id="dropdownMenuButtonCategory">
+                    <input class="form-control dd-listner c-pointer read" id="assetCategory_id" formControlName="assetCategoryName" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownCategory">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let type of assetsCategories">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeCategory($event, type.catagory_name)">
+                            {{ type.catagory_name }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="OwnershipType_id" class="head-font d-flex">
+                    <span>Ownership type<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('OwnershipType')!.invalid &&
+                        (stepOneForm.get('OwnershipType')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      Please select a Ownership type.
+                    </span>
+                  </label>
+                  <div (click)="openDroupDown($event, 'OWNERSHIP')" class="dropdown-container dd-listner" id="dropdownMenuButtonOwnership">
+                    <input class="form-control dd-listner c-pointer read" id="OwnershipType_id" formControlName="OwnershipType" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownOwnership">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let type of assetsOwnersType">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeOwnership($event, type.ownership_value)">
+                            {{ type.ownership_value }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-fill">
+                  <label for="transmissionType_id" class="head-font d-flex">
+                    <span>Transmission<span class="red">*</span>
+                  </span>
+                    <span class="text-red ml-auto" *ngIf="
+                        stepOneForm.get('transmissionType')!.invalid &&
+                        (stepOneForm.get('transmissionType')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      Please select a Transmisson type.
+                    </span>
+                  </label>
+                  <div (click)="openDroupDown($event, 'TRANSMISSION')" class="dropdown-container dd-listner" id="dropdownMenuButtonTransmission">
+                    <input class="form-control dd-listner c-pointer read" id="transmissionType_id" formControlName="transmissionType" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownTransmission">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let type of assetsTransmissionType">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeTransmission($event, type.transmission_value)">
+                            {{ type.transmission_value }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex flex-column justify-content-between mb-2" style="gap: 2rem">
+                <div class="">
+                  <label for="invoice_id" class="d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label for="property_details_cards_id" class="head-font m-0">Additional Charges</label>
+                      <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" data-toggle="modal"
+                        data-target="#invoiceModalId">
+                        <span class="fs-10">Add</span>
+                      </div>
+                    </div>
+                  </label>
+                  <div class="d-flex flex-wrap justify-content-between align-items-center mb-2" style="gap: 2rem;">
+                    <div class="" style=" max-width: fit-content; max-width: 50%; flex:1">
+                      <div class="w-100 dashed-box dashed-box-invoice d-flex align-items-center" style="gap: 2rem">
+                        <span *ngIf="this.intialInvoiceDetailsItems.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                          style="gap: 0.5rem; height: inherit; padding: inherit">
+                          <span *ngFor="
+                                let invoice_details of this.intialInvoiceDetailsItems;
+                                index as invoiceDetailIndex">
+                            <span *ngIf="invoice_details.sale_type=='PRIMARY'"
+                              class="{{ getTradeColor(invoice_details.trade_type) }}" class="inside-span">
+                              <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                              <span class="badge-card-title">Name:
+                                <span class="badge-card-subtitle p-2">{{
+                                  invoice_details.invoice_name
+                                  }}</span>
+                              </span>
+                              <span class="badge-card-title">Account:
+                                <span class="badge-card-subtitle p-2">{{
+                                  invoice_details.bank_account
+                                  }}</span>
+                              </span>
+                              <!-- </div> -->
+                              <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                              <span class="badge-card-title">Wallet:
+                                <span class="badge-card-subtitle p-2 max-wallet-width">{{
+                                  invoice_details.wallet
+                                  }}</span>
+                              </span>
+                              <span class="badge-card-title">Price:
+                                <span class="badge-card-subtitle p-2" *ngIf="!invoice_details.is_percentage">{{
+                                  invoice_details.invoice_price
+                                  }}</span>
+                                <span class="badge-card-subtitle p-2" *ngIf="invoice_details.is_percentage">{{
+                                  invoice_details.invoice_price
+                                  }} %</span>
+                              </span>
+                              <!-- </div> -->
+                              <!-- <span class="badge-card-subtitle p-2">{{
+                                    invoice_details.invoice_name
+                                    }}</span>
+                                  <span class="badge-card-subtitle p-2">{{
+                                    invoice_details.bank_account
+                                    }}</span>
+                                  <span class="badge-card-subtitle p-2 max-wallet-width">{{
+                                    invoice_details.wallet
+                                    }}</span>
+                                  <span class="badge-card-subtitle p-2" *ngIf="!invoice_details.is_percentage">{{
+                                    invoice_details.invoice_price
+                                    }}</span>
+                                  <span class="badge-card-subtitle p-2" *ngIf="invoice_details.is_percentage">{{
+                                    invoice_details.invoice_price
+                                    }} %</span> -->
+                              <span class="min-card-rm-btn" *ngIf="!this.isViewDetails"
+                                (click)="removeInvoiceDetails(invoiceDetailIndex, 'INITIAL')"><i
+                                  class="fa fa-minus"></i></span>
+                            </span>
+                          </span>
+                        </span>
+                        <span *ngIf="this.intialInvoiceDetailsItems.length == 0"
+                          class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                          Please add a documents to see the previews</span>
+                      </div>
+                    </div>
+                    <div style=" max-width: fit-content; max-width: 50%; flex:1">
+                      <div class="w-100 dashed-box dashed-box-invoice d-flex align-items-center" style="gap: 2rem">
+                        <span *ngIf="this.intialInvoiceDetailsItems.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                          style="gap: 0.5rem; height: inherit; padding: inherit">
+                          <span *ngFor="
+                                let invoice_details of this.intialInvoiceDetailsItems;
+                                index as invoiceDetailIndex">
+                            <span *ngIf="invoice_details.sale_type=='SECONDARY'"
+                              class="{{ getTradeColor(invoice_details.trade_type) }}" class="inside-span">
+                              <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                              <span class="badge-card-title">Name:
+                                <span class="badge-card-subtitle p-2">{{
+                                  invoice_details.invoice_name
+                                  }}</span>
+                              </span>
+                              <span class="badge-card-title">Account:
+                                <span class="badge-card-subtitle p-2">{{
+                                  invoice_details.bank_account
+                                  }}</span>
+                              </span>
+                              <!-- </div> -->
+                              <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                              <span class="badge-card-title">Wallet:
+                                <span class="badge-card-subtitle p-2 max-wallet-width">{{
+                                  invoice_details.wallet
+                                  }}</span>
+                              </span>
+                              <span class="badge-card-title">Price:
+                                <span class="badge-card-subtitle p-2" *ngIf="!invoice_details.is_percentage">{{
+                                  invoice_details.invoice_price
+                                  }}</span>
+                                <span class="badge-card-subtitle p-2" *ngIf="invoice_details.is_percentage">{{
+                                  invoice_details.invoice_price
+                                  }} %</span>
+                              </span>
+                              <span class="min-card-rm-btn" *ngIf="!this.isViewDetails"
+                                (click)="removeInvoiceDetails(invoiceDetailIndex, 'INITIAL')"><i
+                                  class="fa fa-minus"></i></span>
+                            </span>
+                          </span>
+                        </span>
+                        <span *ngIf="this.intialInvoiceDetailsItems.length == 0"
+                          class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                          Please add a documents to see the previews</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="d-flex flex-column justify-content-between" style="gap: 2rem">
+                <div class="mb-2">
+                  <label for="property_details_id" class="d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <label for="property_details_cards_id" class="head-font m-0">Asset Details<span
+                          class="red">*</span></label>
+                      <span class="text-red head-font" id="pd_item_validation_id" style="display: none">
+                        Please fill both title and subtitle fields
+                      </span>
+                      <span class="text-red head-font" id="pd_item_validation_id_atleastOne"
+                        *ngIf="this.propertyDetailsItems.length == 0" style="display: none">
+                        Please add atleast 1 property document </span>
+                      <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" (click)="addPropertyDetails()">
+                        <span class="fs-10">Add</span>
+                      </div>
+                    </div>
+                    <div id="property_details_cards_id" class="d-flex justify-content-between mb-2" style="gap: 2rem"
+                      *ngIf="!this.isViewDetails">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10" id="property_details_title_id">Title</span>
+                        </div>
+                        <input type="text" (change)="
+                            onChangeRemoveValidationById(
+                              'pd_item_validation_id'
+                            )
+                          " formControlName="assetDetailsTitleName" class="form-control"
+                          id="property_details_title_id" />
+                      </div>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10"
+                            id="property_details_subtitle_id">Subtitle</span>
+                        </div>
+                        <input type="text" (change)="
+                            onChangeRemoveValidationById(
+                              'pd_item_validation_id'
+                            )
+                          " formControlName="assetDetailsSubtitleName" class="form-control"
+                          id="property_details_subtitle_id" />
+                      </div>
+                    </div>
+                  </label>
+                  <div class="mb-2 dashed-box dashed-box-contain d-flex align-items-center" id="property_details_id"
+                    style="gap: 2rem">
+                    <span *ngIf="propertyDetailsItems.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                      style="gap: 0.5rem; height: inherit; padding: inherit">
+                      <span *ngFor="
+                          let pdItem of propertyDetailsItems;
+                          index as pdIndex
+                        ">
+                        <span class="badge badge-primary min-card c-pointer" (click)="loadPropertyDetailsData(pdIndex)">
+                          <span class="badge-card-title">{{
+                            pdItem.title
+                            }}</span>
+                          <span class="badge-card-subtitle">{{
+                            pdItem.subtitle
+                            }}</span>
+                          <span class="min-card-rm-btn" *ngIf="!this.isViewDetails"
+                            (click)="removePropertyDetails(pdIndex)"><i class="fa fa-minus"></i></span>
+                        </span>
+                      </span>
+                    </span>
+                    <span *ngIf="propertyDetailsItems.length == 0"
+                      class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                      Please add a details by entering Title and Subtitle</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex flex-column justify-content-between" style="gap: 2rem">
+                <div>
+                  <label for="property_features_id" class="d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <label for="property_features_cards_id" class="head-font m-0">Property Features<span
+                          class="red">*</span></label>
+                      <span class="text-red head-font" id="pf_item_validation_id" style="display: none">
+                        Please fill both title and subtitle fields
+                      </span>
+                      
+                      <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" (click)="addPropertyFeatures()">
+                        <span class="fs-10">Add</span>
+                      </div>
+                    </div>
+                    <div id="property_features_cards_id" class="d-flex justify-content-between flex-column mb-2"
+                      style="gap: 1rem">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10" id="property_features_title_id">Title</span>
+                        </div>
+                      
+                        <input type="text" class="form-control" (change)="
+                            onChangeRemoveValidationById(
+                              'pf_item_validation_id'
+                            )
+                          " formControlName="propertyFeaturesTitleName" id="property_features_title_id" />
+                      </div>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10"
+                            id="property_features_description">Description</span>
+                        </div>
+                        <textarea class="form-control fs-12" (change)="
+                            onChangeRemoveValidationById(
+                              'pf_item_validation_id'
+                            )
+                          " id="property_features_description"
+                          formControlName="propertyFeaturesDescriptionName"></textarea>
+                      </div>
+                    </div>
+                  </label>
+                  <div class="dashed-box dashed-box-contain d-flex align-items-center" id="property_features_id"
+                    style="gap: 2rem">
+                    <span *ngIf="propertyFeaturesItems.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                      style="gap: 0.5rem; height: inherit; padding: inherit">
+                      <span *ngFor="
+                          let pfItem of propertyFeaturesItems;
+                          index as pfIndex
+                        ">
+                        <span class="badge badge-primary min-card c-pointer" (click)="loadPropertyFeatureData(pfItem)">
+                          <span class="badge-card-title">{{
+                            pfItem.title
+                            }}</span>
+                          <span class="badge-card-subtitle">{{
+                            pfItem.subtitle
+                            }}</span>
+                          <span class="min-card-rm-btn" *ngIf="!this.isViewDetails"
+                            (click)="removePropertyFeatures(pfIndex)"><i class="fa fa-minus"></i></span>
+                        </span>
+                      </span>
+                    </span>
+                    <span *ngIf="propertyFeaturesItems.length == 0"
+                      class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                      Please add a features by entering Title and
+                      Description</span>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </form>
+        </div>
+        <div *ngIf="currentFormPage === 2" class="card p-3">
+          <form [formGroup]="stepTwoForm" (ngSubmit)="promptStep2()" class="d-flex flex-wrap justify-content-between"
+            style="gap: 2rem">
+            <div class="d-flex flex-column" style="min-width: 400px; flex: 1">
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <!-- <div class="flex-fill">
+                  <label for="brandType_id" class="head-font d-flex justify-content-between">
+                    <span>Brand<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                    stepTwoForm.get('brandType')!.invalid &&
+                        (stepTwoForm.get('brandType')!.dirty ||
+                          isFormOneSubmitted)
+                      ">
+                      Please select a Brand type.
+                    </span>
+                    <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" data-toggle="modal"
+                    data-target="#cityLocationModalId" (click)="addCityLocation('BRAND')">
+                    <span class="fs-10">Add</span>
+                  </div>
+                  </label>
+                  <div class="dropdown-container">
+                    <select id="brandType_id" formControlName="brandType" class="form-control">
+                      
+                      
+<option *ngFor="let type of assetsBrands" [value]="type.brand_id">{{ type.label }}</option>
+                    </select>
+                    <span class="dropdown-chevron">&#9662;</span>
+                  </div>
+                </div> -->
+                <div class="flex-fill">
+                  <label for="assetFuel_id" class="head-font d-flex">
+                    <span>Fuel<span class="red">*</span>
+                  </span>
+                    <span class="text-red ml-auto" *ngIf="
+                    stepTwoForm.get('assetFuel')!.invalid &&
+                    (stepTwoForm.get('assetFuel')!.dirty ||
+                    isFormTwoSubmitted)
+                  ">
+                      Please select a Asset fuel.
+                    </span>
+                  </label>
+                  <div (click)="openDroupDown($event, 'FUEL')" class="dropdown-container dd-listner" id="dropdownMenuButtonFuel">
+                    <input class="form-control dd-listner c-pointer read" id="assetFuel_id" formControlName="assetFuelDisplay" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownFuel">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let type of assetsFuelTypes">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeFuel($event, type)">
+                            {{ type.fuel_value }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+             
+             
+              <div class="d-flex flex-column justify-content-between" style="gap: 2rem">
+                <div class="mb-2">
+                  <label for="property_details_id" class="d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <label for="property_images_id" class="head-font m-0">
+                        Property Images<span class="red">*</span>
+                      </label>
+                      <span class="text-red head-font ml-auto" id="pimage_item_validation_id" style="display: none">
+                      </span>
+                    </div>
+                  </label>
+                  <div id="property_images_id" class="d-flex justify-content-between" style="gap: 0.5rem">
+                    <div
+                      class="drop-area w-50 dashed-box dash-img-container d-flex align-items-center justify-content-center"
+                      style="gap: 2rem" (dragover)="onDragOverFile($event)" *ngIf="!this.isViewDetails"
+                      (drop)="onDropFile($event, 'P_IMAGES')">
+                      <span
+                        class="text-muted d-flex justify-content-center position-relative align-items-center h-100 fs-12 ml-auto mr-auto">
+                        <span class="position-absolute cus-file-input-parent">
+                          <input type="file" class="cus-file-input" formControlName="propertyImagesName" multiple
+                            accept="image/*" (change)="onFileSelected($event, 'P_IMAGES')" />
+                        </span>
+                        <span class="position-relative">Drag & Drop / Browse</span>
+                      </span>
+                    </div>
+                    <div class="w-100 dashed-box dash-img-container d-flex align-items-center" style="gap: 2rem">
+                      <span *ngIf="propertyImages.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                        style="gap: 0.5rem; height: inherit; padding: inherit">
+                        <span *ngFor="
+                            let imageItem of propertyImages;
+                            index as pImageIndex
+                          ">
+                          <span class="badge-primary min-card min-card-img c-pointer">
+                            <img src="{{ imageItem.base64 }}" alt="Property Img"
+                              (click)="openUrl(imageItem.base64,'IMAGE')" />
+                            <span class="min-card-rm-btn min-card-rm-img-btn"
+                              (click)="removePropertyImages(pImageIndex)"><i class="fa fa-minus"></i></span>
+                          </span>
+                        </span>
+                      </span>
+                      <span *ngIf="propertyImages.length == 0"
+                        class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                        Please add a images to see the previews</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="property_features_id" class="d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <label for="property_images_id" class="head-font m-0">
+                        History<span class="red">*</span>
+                      </label>
+                      <span class="text-red head-font" id="pf_item_history_id" style="display: none">
+                        Please fill all History details
+                      </span>
+                    </div>
+                    <div class="input-group mb-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text head-font fs-10"
+                          id="historySubTitle_id">Sub Title</span>
+                      </div>
+                      <input class="form-control fs-12" (change)="
+                      onChangeRemoveValidationById(
+                        'pf_item_history_id'
+                      )
+                    " id="historySubTitle_id"
+                    formControlName="historySubTitle"/>
+                    </div>
+                    <div id="property_features_cards_id" class="d-flex justify-content-between flex-column mb-2"
+                      style="gap: 1rem">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10"
+                            id="company_id">Company</span>
+                        </div>
+                        <input class="form-control fs-12" (change)="
+                        onChangeRemoveValidationById(
+                          'pf_item_history_id'
+                        )
+                      " id="company_id"
+                      formControlName="company"/>
+                      </div>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10"
+                            id="corporatePara_id">Corporate History</span>
+                        </div>
+                        <input class="form-control fs-12" (change)="
+                        onChangeRemoveValidationById(
+                          'pf_item_history_id'
+                        )
+                      " id="corporatePara_id"
+                      formControlName="corporatePara1"/>
+                      <input class="form-control fs-12" (change)="
+                        onChangeRemoveValidationById(
+                          'pf_item_history_id'
+                        )
+                      " id="corporatePara_id"
+                      formControlName="corporatePara2"/>
+                       
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="property_features_id" class="d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <label for="property_images_id" class="head-font m-0">
+                        Last Service<span class="red">*</span>
+                      </label>
+                      <span class="text-red head-font" id="pf_item_lastSer_id" style="display: none">
+                        Please fill all service details
+                      </span>
+                    </div>
+                    <div id="property_features_cards_id" class="d-flex justify-content-between flex-column mb-2" style="gap: 1rem">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10" id="lastServiceDate_id">Date</span>
+                        </div>
+                        <input type="date" class="form-control fs-12" (change)="
+                                        onChangeRemoveValidationById(
+                                          'pf_item_lastSer_id'
+                                        )
+                                      " id="lastServiceDate_id" formControlName="lastServiceDate" />
+                      </div>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10" id="lastServiceContent_id">Kilometer</span>
+                        </div>
+                        <input type="number" class="form-control fs-12" (change)="
+                                        onChangeRemoveValidationById(
+                                          'pf_item_lastSer_id'
+                                        )
+                                      " id="lastServiceContent_id" formControlName="lastServiceContent" (keypress)="preventNonNumericInput($event)"/>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div class="flex-fill">
+                  <label for="property_features_id" class="d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <label for="property_images_id" class="head-font m-0">
+                        Insurance<span class="red">*</span>
+                      </label>
+                      <span class="text-red head-font" id="pf_item_insurence_id" style="display: none">
+                        Please fill all insurence deatils
+                      </span>
+                      
+                    </div>
+                    <div id="property_features_cards_id" class="d-flex justify-content-between flex-column mb-2"
+                      style="gap: 1rem">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10"
+                            id="insurenceDate_id">Valid upto</span>
+                        </div>
+                        <input type="date" class="form-control fs-12" (change)="
+                        onChangeRemoveValidationById(
+                          'pf_item_insurence_id'
+                        )
+                      " id="insurenceDate_id"
+                      formControlName="insurenceDate"/>
+                      </div>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10"
+                            id="insurenceContent_id">Content</span>
+                        </div>
+                        <input class="form-control fs-12" (change)="
+                        onChangeRemoveValidationById(
+                          'pf_item_insurence_id'
+                        )
+                      " id="insurenceContent_id"
+                      formControlName="insurenceContent"/>
+                       
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-column justify-content-between" style="min-width: 400px; flex: 1">
+              <!-- <div class="mb-2 d-flex justify-content-between" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="property_site_id" class="head-font d-flex">
+                    <span>Property Site Link<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                    stepTwoForm.get('propertySiteLinkName')!.invalid &&
+                        (stepTwoForm.get('propertySiteLinkName')!.dirty ||
+                        isFormTwoSubmitted)
+                      ">
+                      Invalid Property Site Link
+                    </span>
+                  </label>
+                  <input type="text" class="form-control" id="property_site_id"
+                    formControlName="propertySiteLinkName" />
+                </div>
+                <div class="flex-fill">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label for="builder_name_id" class="head-font d-flex">
+                      <span>Builder Name<span class="red">*</span></span>
+                    </label>
+                    <span class="text-red ml-auto" *ngIf="
+                          stepTwoForm.get('builderName')!.invalid &&
+                          (stepTwoForm.get('builderName')!.dirty ||
+                            isFormTwoSubmitted)
+                        ">
+                      Please select a builder
+                    </span>
+                    <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" data-toggle="modal"
+                      data-target="#cityLocationModalId" (click)="addCityLocation('BUILDER')">
+                      <span class="fs-10">Add</span>
+                    </div>
+                  </div>
+                 
+                  <div (click)="openDroupDown($event, 'BUILDER')" class="dropdown-container dd-listner-builder"
+                    id="dropdownMenuButtonLocation" mdbDropdownToggle>
+                    <input class="form-control dd-listner-builder" id="inputCity" formControlName="builderName"
+                      readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+                  </div>
+                  <div class="dropdownLocation dd-listner-builder" style="display: none; z-index: 3;"
+                    id="detailsDroupDownbuilder">
+                    <ul mdbDropdown class="dropdown-menu dd-listner-builder mat-scroll"
+                      aria-labelledby="detailsDroupDown">
+                      <li class="dropdown-item dd-listner-builder fs-12 c-pointer d-flex justify-content-between"
+                        *ngFor="let builderInfo of buildersDetails">
+                        <span class="flex-fill dd-listner-builder"
+                          (mousedown)="onChangeBuilder($event, builderInfo.builder_name)">{{
+                          builderInfo.builder_name }} </span>
+                        <span class="remove-icon dd-listner-builder"
+                          (click)="removeBuilder($event, builderInfo.builder_name)">X</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="dashed-box d-flex align-items-center">
+                  <span *ngIf="this.stepTwoForm.controls['builderName'].value != ''" class="d-flex flex-wrap p-0">
+                    <span class="badge-primary min-card c-pointer" style="background-color: white !important;">
+                      <img src="{{ getBuilderImageUrl() }}" class="fs-12" style="object-fit: contain" alt="Property Img"
+                        height="50" width="50" />
+                    </span>
+                  </span>
+                  <span *ngIf="this.stepTwoForm.controls['builderName'].value == ''"
+                    class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                    No Image
+                  </span>
+                </div>
+              </div> -->
+              <!-- <div class="mb-2">
+                <div class="mb-2">
+                  <label for="property_documents_id" class="d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <label for="property_documents_id" class="head-font m-0">Property Documents<span
+                          class="red">*</span></label>
+                      <span class="text-red head-font" id="pdoc_item_validation_id" style="display: none">
+                      </span>
+                      <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold"
+                        (click)="addPropertyDocuments()">
+                        <span class="fs-10">Add</span>
+                      </div>
+                    </div>
+                    <div id="property_documents_id" class="d-flex flex-column justify-content-between"
+                      style="gap: 0.5rem">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10" id="property_document_name_id">Document
+                            Name</span>
+                        </div>
+                        <input type="text" formControlName="propertyDocumentTitleName" class="form-control"
+                          id="property_document_name_id" />
+                      </div>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10" id="property_document_description_id">Document
+                            Description</span>
+                        </div>
+                        <textarea class="form-control fs-12" formControlName="propertyDocumentDescriptionName"
+                          placeholder="Enter a short description about this property document"
+                          id="property_document_description_value_id" rows="4"></textarea>
+                      </div>
+                    </div>
+                  </label>
+                  <div id="property_document_upload_id" class="d-flex justify-content-between" style="gap: 0.5rem">
+                    <div
+                      class="drop-area w-50 dashed-box dashed-box-contain d-flex align-items-center justify-content-center"
+                      style="gap: 2rem" (dragover)="onDragOverFile($event)" *ngIf="!this.isViewDetails"
+                      (drop)="onDropFile($event, 'P_DOCS')">
+                      <span
+                        class="text-muted d-flex justify-content-center position-relative align-items-center h-100 fs-12 ml-auto mr-auto">
+                        <span class="position-absolute cus-file-input-parent">
+                          <input type="file" class="cus-file-input" accept=".pdf"
+                            formControlName="propertyCurrentDocsName" multiple
+                            (change)="onFileSelected($event, 'P_DOCS')" />
+                        </span>
+                        <span class="position-relative">Drag & Drop / Browse</span>
+                      </span>
+                    </div>
+                    <div class="w-100 dashed-box dashed-box-contain d-flex align-items-center" style="gap: 2rem">
+                      <span *ngIf="propertyCurrentDocuments.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                        style="gap: 0.5rem; height: inherit; padding: inherit">
+                        <span *ngFor="
+                            let docItem of propertyCurrentDocuments;
+                            index as pDocIndex
+                          ">
+                          <span class="badge badge-primary min-card c-pointer" (click)="openUrl(docItem.base64, 'PDF')">
+                            <span class="badge-card-subtitle p-2">{{
+                              docItem.name
+                              }}</span>
+                            <span class="min-card-rm-btn" *ngIf="!this.isViewDetails"
+                              (click)="removeCurrentDocImages(pDocIndex)"><i class="fa fa-minus"></i></span>
+                          </span>
+                        </span>
+                      </span>
+                      <span *ngIf="propertyCurrentDocuments.length == 0"
+                        class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                        Please add a documents to see the previews</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="w-100 dashed-box dashed-box-contain d-flex align-items-center" style="gap: 2rem">
+                  <span *ngIf="propertyDocuments.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                    style="gap: 0.5rem; height: inherit; padding: inherit">
+                    <span *ngFor="
+                      let pDocItem of propertyDocuments;
+                      index as pDocIndex
+                    ">
+                      <span class="badge badge-primary min-card c-pointer" (click)="loadPropertyDocumentData(pDocIndex)"
+                        style="padding-top: 2px; ">
+                        <span class="badge-card-title">{{ pDocItem.title }}</span>
+                        <span class="badge-card-subtitle">{{
+                          pDocItem.description
+                          }}</span>
+                        <span class="d-flex">
+                          <span *ngFor="let item of pDocItem.docs" class="badge-card-subtitle">
+                            <i class="fa fa-asterisk"></i></span>
+                        </span>
+                        <span class="min-card-rm-btn" *ngIf="!this.isViewDetails"
+                          (click)="removePropertyDoc(pDocIndex)"><i class="fa fa-minus"></i>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                  <span *ngIf="propertyDocuments.length == 0"
+                    class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                    Please add a property document title, name and required
+                    documents to see previews
+                  </span>
+                </div>
+              </div> -->
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <label for="airConditionType_id" class="head-font d-flex">
+                    <span>Air condition<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                    stepTwoForm.get('airConditionType')!.invalid &&
+                    (stepTwoForm.get('airConditionType')!.dirty ||
+                    isFormTwoSubmitted)
+                  ">
+                      Please select a Ownership type.
+                    </span>
+                  </label>
+                  <div (click)="openDroupDown($event, 'AIR_CONDITION')" class="dropdown-container dd-listner" id="dropdownMenuButtonAirCondition">
+                    <input class="form-control dd-listner c-pointer read" id="airConditionType_id" formControlName="airConditionTypeDisplay" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownAirCondition">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let type of assetsAirConditionerType">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeAirCondition($event, type)">
+                            {{ type.text }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex-fill">
+                  <label for="classType_id" class="head-font d-flex">
+                    <span>Class<span class="red">*</span></span>
+                    <span class="text-red ml-auto" *ngIf="
+                    stepTwoForm.get('classType')!.invalid &&
+                    (stepTwoForm.get('classType')!.dirty ||
+                    isFormTwoSubmitted)
+                  ">
+                      Please select class of asset.
+                    </span>
+                  </label>
+                  <div (click)="openDroupDown($event, 'CLASS')" class="dropdown-container dd-listner" id="dropdownMenuButtonClass">
+                    <input class="form-control dd-listner c-pointer read" id="classType_id" formControlName="classTypeDisplay" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownClass">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let type of assetsClassType">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeClass($event, type)">
+                            {{ type.class_name }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                <div class="flex-fill">
+                  <div class="d-flex justify-content-between mb-2">
+                    <label for="assetFeature_id" class="head-font d-flex mb-2">
+                      <span>Asset features<span class="red">*</span>
+                      </span></label>
+                      <span class="text-red ml-auto" id="asset_features_validation_id" style="display: none; font-size: 12px; font-weight: 500;">
+                        Please select a Asset feature.
+                      </span>
+                    <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" type="submit" [class.disabled]="isAssetIdEmpty" (click)="setSearchByFilterItem(addFeatureId, 'ASSET_FE')">
+                      <span class="fs-10">Add</span>
+                    </div>
+                  </div>
+                  <div (click)="openDroupDown($event, 'FEATURE')" class="dropdown-container dd-listner" id="dropdownMenuButtonFeature">
+                    <input class="form-control dd-listner c-pointer read" id="assetFeature_id" formControlName="assetFeature" readonly />
+                    <span class="dropdown-chevron">&#9662;</span>
+
+                    <div class="custom-dropdown-list" id="detailsDroupDownFeature">
+                      <ul class="mat-scroll dd-listner">
+                        <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                          *ngFor="let type of assetsFeatures">
+                          <span class="flex-fill dd-listner" (mousedown)="onChangeFeature($event, type)">
+                            {{ type }}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="location-box">
+                      <div class="d-flex flex-wrap" *ngIf="assetFeatures.length != 0">
+                        <div class="filter-btn mb-2" *ngFor="let searchItem of assetFeatures">
+                          <span class="mr-2">{{ searchItem }}</span>
+                          <span class="badge badge-danger-bold badge-minus" (click)="
+                                              removeSearchByFilterItem(searchItem, 'ASSET_FE')
+                                            ">
+                            <span><i class="fa fa-minus fs-10"></i></span></span>
+                        </div>
+                      </div>
+                      <span *ngIf="assetFeatures.length == 0"
+                        class="text-muted d-flex justify-content-center align-items-center h-100 fs-12">Please add a asset
+                        Features.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+               <div class="d-flex flex-column" style="gap: 2rem">
+                <div class="mb-2">
+                  <label for="property_details_id" class="d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <label for="property_details_cards_id" class="head-font m-0">Asset Details<span
+                          class="red">*</span></label>
+                      <span class="text-red head-font" id="pd_item_validation_id" style="display: none">
+                        Please fill both title and subtitle fields
+                      </span>
+                      <span class="text-red head-font" id="pd_item_validation_id_atleastOne"
+                        *ngIf="this.propertyDetailsItems.length == 0" style="display: none">
+                        Please add atleast 1 asset details </span>
+                      <div *ngIf="!this.isViewDetails" class="badge badge-primary-bold" (click)="addPropertyDetails()">
+                        <span class="fs-10">Add</span>
+                      </div>
+                    </div>
+                    <div id="property_details_cards_id" class="d-flex justify-content-between mb-2" style="gap: 2rem"
+                     >
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10" id="property_details_title_id">Title</span>
+                        </div>
+                        <!-- <input type="text" (change)="
+                            onChangeRemoveValidationById(
+                              'pd_item_validation_id'
+                            )
+                          " formControlName="assetDetailsTitleName" class="form-control"
+                          id="property_details_title_id" /> -->
+                          <div (click)="openDroupDown($event, 'DETAIL_TITLE')" class="dropdown-container flex-fill dd-listner" id="dropdownMenuButtonDetailTitle">
+                            <input class="form-control dd-listner c-pointer read" id="property_details_title_id" formControlName="assetDetailsTitleName" readonly />
+                            <span class="dropdown-chevron">&#9662;</span>
+
+                            <div class="custom-dropdown-list" id="detailsDroupDownDetailTitle">
+                              <ul class="mat-scroll dd-listner">
+                                <li class="dropdown-item dd-listner fs-12 c-pointer d-flex justify-content-between"
+                                  *ngFor="let type of assetDetailsObj">
+                                  <span class="flex-fill dd-listner" (mousedown)="onChangeDetailTitle($event, type.text)">
+                                    {{ type.text }}
+                                  </span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text head-font fs-10"
+                            id="property_details_subtitle_id">Subtitle</span>
+                        </div>
+                        <input type="text" (change)="
+                            onChangeRemoveValidationById(
+                              'pd_item_validation_id'
+                            )
+                          " formControlName="assetDetailsSubtitleName" class="form-control"
+                          id="property_details_subtitle_id" />
+                      </div>
+                    </div>
+                  </label>
+                  <div class="mb-2 dashed-box dashed-box-contain d-flex align-items-center" id="property_details_id"
+                    style="gap: 2rem">
+                    <span *ngIf="propertyDetailsItems.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                      style="gap: 0.5rem; height: inherit; padding: inherit">
+                      <span *ngFor="
+                          let pdItem of propertyDetailsItems;
+                          index as pdIndex
+                        ">
+                        <span class="badge badge-primary min-card c-pointer" (click)="loadPropertyDetailsData(pdIndex)">
+                          <span class="badge-card-title">{{
+                            pdItem.title
+                            }}</span>
+                          <span class="badge-card-subtitle">{{
+                            pdItem.content
+                            }}</span>
+                          <span class="min-card-rm-btn" *ngIf="!this.isViewDetails"
+                            (click)="removePropertyDetails(pdIndex)"><i class="fa fa-minus"></i></span>
+                        </span>
+                      </span>
+                    </span>
+                    <span *ngIf="propertyDetailsItems.length == 0"
+                      class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                      Please add a details by entering Title and Subtitle</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="d-flex flex-column justify-content-between" style="gap: 2rem">
+                <div class="">
+                  <label for="property_details_cards_id" class="head-font mb-2">Asset Status</label>
+                  <div id="property_details_cards_id" class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text head-font fs-10" id="sale_status_id">Sale</span>
+                      </div>
+                      <input type="button" readonly class="form-control" id="sale_status_id" style="text-align: left"
+                        data-toggle="modal" [attr.data-target]="getIsUpdateProperty() ? '#statusModal' : null" value="{{
+                          this.stepTwoForm.controls['saleStatusName'].value
+                        }}" />
+                    </div>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text head-font fs-10" id="spv_status_id">SPV</span>
+                      </div>
+                      <input type="button" readonly value="{{
+                          this.stepTwoForm.controls['spvStatusName'].value
+                        }}" style="text-align: left" class="form-control" id="spv_status_id" data-toggle="modal"
+                        [attr.data-target]="getIsUpdateProperty() ? '#spvStatusModal' : null" />
+                    </div>
+                  </div>
+                  <div id="property_details_cards_id" class="d-flex justify-content-between mb-2" style="gap: 2rem">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text head-font fs-10" id="nft_status_id">Token</span>
+                      </div>
+                      <input type="button" readonly value="{{
+                          this.stepTwoForm.controls['nftStatusName'].value
+                        }}" style="text-align: left" class="form-control" id="nft_status_id" data-toggle="modal"
+                        [attr.data-target]="getIsUpdateProperty() ? '#nftStatusModal' : null" />
+                    </div>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text head-font fs-10" id="resale_status_id">Resale</span>
+                      </div>
+                      <input type="button" readonly value="{{
+                          this.stepTwoForm.controls['resaleStatusName'].value
+                        }}" style="text-align: left" class="form-control" id="resale_status_id" data-toggle="modal"
+                        [attr.data-target]="getIsUpdateProperty() ? '#resaleStatusModal' : null" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loader-parent" id="listingLoaderId" *ngIf="this.isPageLoader">
+  <div class="loader"></div>
+  <div class="mt-2 text-gold">Loading</div>
+</div>
+
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="exampleModalLabel">Sale Status Updation</h6>
+        <button type="button" class="close" id="onCancelClickSale" data-dismiss="modal" (click)="onCancelClick('SALE')"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="modalForm" (ngSubmit)="submitModal()">
+          <select id="" class="form-control" formControlName="selectedSaleSatus" value="{{
+            this.stepTwoForm.controls['saleStatusName'].value }}">
+            <option>CREATED</option>
+            <option>STARTED</option>
+            <option>COMPLETED</option>
+            <option>COMMITED</option>
+            <option>PAUSED</option>
+            <option>ABORTED</option>
+          </select>
+          <p class="fs-10 model-p-margin">
+            
+          </p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-gold fs-10 text-uppercase pl-4 pr-4" type="submit" data-dismiss="modal"
+          (click)="statusConfirmationModal('SALE')">
+          Update Sale Status
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="spvStatusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="exampleModalLabel">SPV Status Updation</h6>
+        <button type="button" class="close" data-dismiss="modal" (click)="onCancelClick('SPV')" id="onCancelClickSpv"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="modalForm" (ngSubmit)="submitModal()">
+          <select id="" formControlName="selectedSpvSatus" class="form-control">
+            <option>FORMED</option>
+            <option>UNFORMED</option>
+          </select>
+          <p class="fs-10 model-p-margin">
+           
+          </p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-gold fs-10 text-uppercase pl-4 pr-4" type="submit" data-dismiss="modal"
+          (click)="statusConfirmationModal('SPV')">
+          Update SPV Status
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="resaleStatusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="exampleModalLabel">
+          Resale Status Updation
+        </h6>
+        <button type="button" class="close" id="onCancelClickResale" (click)="onCancelClick('RESALE')"
+          data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="modalForm" (ngSubmit)="submitModal()">
+          <select id="" formControlName="selectedResaleSatus" class="form-control">
+            <option>OPEN</option>
+            <option>NOT_OPEN</option>
+            <option>CLOSED</option>
+          </select>
+          <p class="fs-10 model-p-margin">
+          
+          </p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-gold fs-10 text-uppercase pl-4 pr-4" type="submit" data-dismiss="modal"
+          (click)="statusConfirmationModal('RESALE')">
+          Update Resale Status
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="nftStatusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" id="exampleModalLabel">Token Status Updation</h6>
+        <button type="button" class="close" id="onCancelClickNft" (click)="onCancelClick('TOKEN')" data-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="modalForm" (ngSubmit)="submitModal()">
+          <label for="ipfs" class="head-font d-flex">
+            <span>IPFS</span>
+          </label>
+          <input type="text" class="form-control" id="ipfs" formControlName="ipfsValue" />
+          <label for="nft_status" class="head-font d-flex" style="margin-top: 8px">
+            <span>Token Status</span>
+          </label>
+          <select id="" formControlName="selectedNftSatus" class="form-control" id="nft_status">
+            <option>ISSUED</option>
+            <option>NOT_ISSUED</option>
+          </select>
+          <p class="fs-10 model-p-margin">
+           
+          </p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-gold fs-10 text-uppercase pl-4 pr-4" type="submit" data-dismiss="modal"
+          (click)="statusConfirmationModal('TOKEN')">
+          Commit Token
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="invoiceModalId" tabindex="-1" role="dialog" aria-labelledby="invoiceModalLabel"
+  aria-hidden="true" style="display: none;">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="min-width: 50vw; max-width: 50%;">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title text-primary" id="invoiceModalLabel">Additional Charges</h6>
+        <button type="button" class="close" id="onCancelClickinvoice" (click)="onCancelClickInvoice()"
+          data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="modalInvoiceForm" (ngSubmit)="submitInvoiceModal()">
+          <div class="d-flex justify-content-right align-items-center mb-3">
+            <span class="text-red head-font" id="invoice_item_validation_id" style="display: none">
+              Please ensure to fill all the fields to add an invoice item.
+            </span>
+            <div class="badge badge-primary-bold ml-auto" (click)="addInvoiceCard()">
+              <span class="fs-10">Add</span>
+            </div>
+          </div>
+          <div class="dashed-box bg-primary-smoke">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2" style="gap: 2rem;">
+              <div style="flex: 1">
+                <label for="invoice_sale_type_id" class="head-font d-flex">
+                  <span>Sale Type <span class="red">*</span></span>
+                </label>
+                <div class="dropdown-container">
+                  <select (change)=" onChangeRemoveValidationById('invoice_item_validation_id')"
+                    formControlName="invoiceSaleTypeName" class="form-control" id="invoice_sale_type_id">
+                    <option>PRIMARY</option>
+                    <option>SECONDARY</option>
+                  </select>
+                  <span class="dropdown-chevron">&#9662;</span>
+                </div>
+              </div>
+              <div style="flex: 1">
+                <label for="invoice_trade_type_id" class="head-font d-flex">
+                  <span>Trade Type <span class="red">*</span></span>
+                </label>
+                <div class="dropdown-container">
+                  <select (change)=" onChangeRemoveValidationById('invoice_item_validation_id')"
+                    formControlName="invoiceTradeTypeName" class="form-control" id="invoice_trade_type_id">
+                    <option>BUY</option>
+                    <option>SELL</option>
+                  </select>
+                  <span class="dropdown-chevron">&#9662;</span>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2" style="gap: 2rem;">
+              <div style="flex:1">
+                <label for="invoice_name_id" class="head-font d-flex">
+                  <span>Name<span class="red">*</span></span>
+                </label>
+                <input type="text" (change)=" onChangeRemoveValidationById('invoice_item_validation_id')"
+                  class="form-control" id="invoice_name_id" formControlName="invoiceNameName" />
+                  <!-- <div class="dropdown-container">
+                    <select id="invoice_item_validation_id" formControlName="invoiceNameName" class="form-control">
+                   
+                      <option *ngFor="let type of otherChargesOption" [value]="type.text">{{ type.text }}</option>
+                    </select>
+                    <span class="dropdown-chevron">&#9662;</span>
+                  </div> -->
+              </div>
+              <div style="flex:1">
+                <label for="invoice_price_id" class="head-font d-flex">
+                  <span>Price<span class="red">*</span></span>
+                  <!-- <span class="text-red head-font ml-auto"
+                    *ngIf="this.invoiceIsPercent && this.modalInvoiceForm.controls['invoicePriceName'].value > 100">
+                    Please provide a valid percentage
+                  </span> -->
+                </label>
+                <div class="input-group" id="invoice_price_id">
+                  <input type="number" [min]="this.invoiceIsPercent ? 100 : ''"
+                    (change)=" onChangeRemoveValidationById('invoice_item_validation_id')" class="form-control"
+                    id="invoicePriceNameId" formControlName="invoicePriceName" required>
+                  <div class="input-group-append">
+                    <button *ngIf="this.invoiceIsPercent" class="btn btn-gold pb-0 pt-0"
+                      style="border: 1px solid var(--color-tertiary-border) !important;  z-index: 1; box-shadow: none;"
+                      type="button" (click)="changePriceOrFixed()">
+                      <i class="fa fa-percent"></i>
+                    </button>
+                    <button *ngIf="!this.invoiceIsPercent" class="btn btn-gold pb-0 pt-0"
+                      style="border: 1px solid var(--color-tertiary-border) !important;  z-index: 1;  box-shadow: none;"
+                      type="button" (click)="changePriceOrFixed()">
+                      <i class="fa fa-paperclip"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2" style="gap: 2rem;">
+              <div class="flex-fill">
+                <label for="invoice_account_id" class="head-font d-flex">
+                  <span>Account</span>
+                </label>
+                <input type="text" class="form-control" id="invoice_account_id" formControlName="invoiceAccountName" />
+              </div>
+              <div class="flex-fill">
+                <label for="invoice_wallet_id" class="head-font d-flex">
+                  <span>Wallet</span>
+                </label>
+                <input type="text" class="form-control" id="invoice_wallet_id" formControlName="invoiceWalletName" />
+              </div>
+            </div>
+          </div>
+          <hr class="mt-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-center mb-2" style="gap: 2rem;">
+            <div class="flex-fill" style=" max-width: fit-content; max-width: 50%; flex:1">
+              <label for="invoice_item" class="head-font d-flex">
+                <span>Primary Charges</span>
+              </label>
+              <div class="w-100 dashed-box dashed-box-invoice d-flex align-items-center" style="gap: 2rem">
+                <span *ngIf="this.invoiceDetailsItems.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                  style="gap: 0.5rem; height: inherit; padding: inherit">
+                  <span *ngFor="
+                        let invoice_details of this.invoiceDetailsItems;
+                        index as invoiceDetailIndex"
+                    [ngStyle]="{'display': invoice_details.sale_type=='PRIMARY' ? 'block' : 'none'}">
+                    <span *ngIf="invoice_details.sale_type=='PRIMARY'"
+                      class="{{ getTradeColor(invoice_details.trade_type) }}" class="inside-span"
+                      (click)="loadInvoiceDetailsData(invoiceDetailIndex)">
+                      <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                      <span class="badge-card-title">Name:
+                        <span class="badge-card-subtitle p-2">{{
+                          invoice_details.invoice_name
+                          }}</span>
+                      </span>
+                      <span class="badge-card-title">Account:
+                        <span class="badge-card-subtitle p-2">
+                          {{ invoice_details.bank_account }} </span>
+                      </span>
+                      <!-- </div> -->
+                      <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                      <span class="badge-card-title">Wallet:
+                        <span class="badge-card-subtitle p-2 max-wallet-width">
+                          {{
+                          getTrimText(invoice_details.wallet, 6)
+                          }} </span>
+                      </span>
+                      <span class="badge-card-title">Price:
+                        <span class="badge-card-subtitle p-2" *ngIf="!invoice_details.is_percentage">{{
+                          invoice_details.invoice_price
+                          }}</span>
+                        <span class="badge-card-subtitle p-2" *ngIf="invoice_details.is_percentage">{{
+                          invoice_details.invoice_price
+                          }} %</span>
+                      </span>
+                      <!-- </div> -->
+                      <!-- <span class="badge-card-subtitle p-2">{{
+                            invoice_details.invoice_name
+                            }}</span>
+                          <span class="badge-card-subtitle p-2">{{
+                            invoice_details.bank_account
+                            }}</span>
+                          <span class="badge-card-subtitle p-2 max-wallet-width">{{
+                            invoice_details.wallet
+                            }}</span>
+                          <span class="badge-card-subtitle p-2" *ngIf="!invoice_details.is_percentage">{{
+                            invoice_details.invoice_price
+                            }}</span>
+                          <span class="badge-card-subtitle p-2" *ngIf="invoice_details.is_percentage">{{
+                            invoice_details.invoice_price
+                            }} %</span> -->
+                      <span class="min-card-rm-btn" *ngIf="!this.isViewDetails"
+                        (click)="removeInvoiceDetails(invoiceDetailIndex, 'MODAL')"><i class="fa fa-minus"></i></span>
+                    </span>
+                  </span>
+                </span>
+                <span *ngIf="invoiceDetailsItems.length == 0"
+                  class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                  Please add a documents to see the previews</span>
+              </div>
+            </div>
+            <div class="flex-fill" style=" max-width: fit-content; max-width: 50%; flex:1">
+              <label for="ipfs" class="head-font d-flex">
+                <span>Secondary Charges</span>
+              </label>
+              <div class="w-100 dashed-box dashed-box-invoice d-flex align-items-center" style="gap: 2rem">
+                <span *ngIf="this.invoiceDetailsItems.length != 0" class="d-flex flex-wrap pl-0 pr-0"
+                  style="gap: 0.5rem; height: inherit; padding: inherit">
+                  <span *ngFor="
+                        let invoice_details of this.invoiceDetailsItems;
+                        index as invoiceDetailIndex"
+                    [ngStyle]="{'display': invoice_details.sale_type=='SECONDARY' ? 'block' : 'none'}">
+                    <span *ngIf="invoice_details.sale_type=='SECONDARY'"
+                      class="{{ getTradeColor(invoice_details.trade_type) }}" class="inside-span"
+                      (click)="loadInvoiceDetailsData(invoiceDetailIndex)">
+                      <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                      <span class="badge-card-title">Name:
+                        <span class="badge-card-subtitle p-2">{{
+                          invoice_details.invoice_name
+                          }}</span>
+                      </span>
+                      <span class="badge-card-title">Account:
+                        <span class="badge-card-subtitle p-2">{{
+                          invoice_details.bank_account
+                          }}</span>
+                      </span>
+                      <!-- </div> -->
+                      <!-- <div class="d-flex justify-content-between align-items-center"> -->
+                      <span class="badge-card-title">Wallet:
+                        <span class="badge-card-subtitle p-2 max-wallet-width"> {{
+                          getTrimText(invoice_details.wallet, 6)
+                          }}</span>
+                      </span>
+                      <span class="badge-card-title">Price:
+                        <span class="badge-card-subtitle p-2" *ngIf="!invoice_details.is_percentage">{{
+                          invoice_details.invoice_price
+                          }}</span>
+                        <span class="badge-card-subtitle p-2" *ngIf="invoice_details.is_percentage">{{
+                          invoice_details.invoice_price
+                          }} %</span>
+                      </span>
+                      <span class="min-card-rm-btn" *ngIf="!this.isViewDetails"
+                        (click)="removeInvoiceDetails(invoiceDetailIndex, 'MODAL')"><i class="fa fa-minus"></i></span>
+                    </span>
+                  </span>
+                </span>
+                <span *ngIf="invoiceDetailsItems.length == 0"
+                  class="text-muted d-flex justify-content-center align-items-center h-100 fs-12 ml-auto mr-auto">
+                  Please add a documents to see the previews</span>
+              </div>
+            </div>
+          </div>
+          <p class="fs-10 model-p-margin">
+          
+          </p>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-gold fs-10 text-uppercase pl-4 pr-4" type="submit" data-dismiss="modal"
+          (click)="onConfirmInvoice()">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="cityLocationModalId" tabindex="-1" role="dialog" aria-labelledby="cityLocationModalLabel"
+  aria-hidden="true" style="display: none;">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="min-width: 36vw; max-width: 35%;">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 *ngIf="this.isCity" class="modal-title text-primary" id="cityModalLabel">Add City</h6>
+        <h6 *ngIf="this.isLocation" class="modal-title text-primary" id="cityModalLabel">Add Location</h6>
+        <h6 *ngIf="this.isBrand" class="modal-title text-primary" id="cityModalLabel">Add Brand</h6>
+        <button type="button" class="close" id="onCancelClickinvoice" (click)="onCancelCityLocation()"
+          data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="cityLocationBuilderForm" (ngSubmit)="submitCityModal()">
+          <div class="d-flex justify-content-right align-items-center mb-3">
+            <span class="text-red head-font" id="city_item_validation_id" style="display: none">
+              Please ensure to fill all the fields.
+            </span>
+          </div>
+          <div *ngIf="this.isBrand || this.isCity || this.isLocation || isSubBrand" class="dashed-box bg-primary-smoke">
+            <div class="d-flex flex-wrap flex-column justify-content-center mb-2" style="gap: 2rem;">
+              <div *ngIf="this.isCity || this.isLocation">
+                <label for="city_name_id" class="head-font d-flex">
+                  <span>City<span class="red">*</span></span>
+                </label>
+                <input type="text" (change)=" onChangeRemoveValidationById('city_item_validation_id')"
+                  class="form-control" id="city_name_id" formControlName="addCityName" [disabled]="false" />
+              </div>
+              <!-- <div *ngIf="this.isCity || this.isLocation">
+                <label for="city_name_id" class="head-font d-flex">
+                  <span>City<span class="red">*</span></span>
+                </label>
+                <input type="text" 
+                  class="form-control" id="city_name_id" formControlName="addCityName" readonly/>
+              </div> -->
+              <div *ngIf="this.isCity || this.isLocation">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="inputCity" class="head-font d-flex">
+                    <span>Location<span class="red">*</span></span>
+                  </label>
+                  <span *ngIf="this.sublocationError" style="font-size: 10px;color: red; margin-bottom: 1%;">Sublocation already exists</span>
+                  <span *ngIf="this.cityError" style="font-size: 10px;color: red; margin-bottom: 1%;">City already exists</span>
+                  <div class="badge badge-primary-bold p-2 ml-2" type="submit"
+                    (click)=" location(addLocationName, 'Location')">
+                    <span class="fs-10">Add</span>
+                  </div>
+                </div>
+                <input class="form-control m-0 filter-input text-left" type="text" placeholder="" (keyup.enter)="
+                  location(addLocationName, 'Location')
+                " #addLocationName formControlName="addLocationName" />
+              </div>
+              <div *ngIf="this.isCity || this.isLocation" class="location-box" style="background-color: white;">
+                <div class="d-flex flex-wrap" *ngIf="addedLocationItems.length != 0">
+                  <div class="d-flex flex-wrap filter-btn mb-2" *ngFor="let loactionItem of addedLocationItems">
+                    <span class="mr-2">{{loactionItem}}</span>
+                    <span class="badge badge-danger-bold badge-minus" (click)="
+                        removeLocationItem(loactionItem, 'Location')
+                      ">
+                      <span><i class="fa fa-minus fs-10"></i></span></span>
+                  </div>
+                </div>
+                <span *ngIf="addedLocationItems.length == 0"
+                  class="text-muted d-flex justify-content-center align-items-center h-100 fs-12">Please add a search
+                  value.</span>
+              </div>
+              <div *ngIf="this.isBrand || isSubBrand">
+                <label for="city_name_id" class="head-font d-flex">
+                  <span>Brand<span class="red">*</span></span>
+                </label>
+                <input type="text" (change)=" onChangeRemoveValidationById('city_item_validation_id')"
+                  class="form-control" id="city_name_id" formControlName="addBrandName" #addBrandName [disabled]="false" />
+              </div>
+              <div *ngIf="this.isBrand || isSubBrand">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <label for="addBuilder" class="head-font d-flex">
+                    <span>Sub brand<span class="red">*</span></span>
+                  </label>
+                  <span *ngIf="this.brandError" style="font-size: 10px;color: red;    margin-bottom: 1%;">Brand already exists</span>
+                  <span *ngIf="this.subBrandError" style="font-size: 10px;color: red;    margin-bottom: 1%;">Sub brand already exists</span>
+                  <div class="badge badge-primary-bold p-2 ml-2" type="submit"
+                    (click)=" location(addSubBrandName, 'brand')">
+                    <span class="fs-10">Add</span>
+                  </div>
+                </div>
+                <input class="form-control m-0 filter-input text-left" type="text" 
+                  formControlName="addSubBrandName" (keyup.enter)="
+                  location(addSubBrandName, 'brand')" #addSubBrandName/>
+              </div>
+              <div *ngIf="this.isBrand || isSubBrand " class="location-box" style="background-color: white;">
+                <div class="d-flex flex-wrap" *ngIf="addedBrandItems.length != 0">
+                  <div class="d-flex flex-wrap filter-btn mb-2" *ngFor="let brandnItem of addedBrandItems">
+                    <span class="mr-2">{{brandnItem}}</span>
+                    <span class="badge badge-danger-bold badge-minus" (click)="
+                        removeLocationItem(brandnItem, 'brand')
+                      ">
+                      <span><i class="fa fa-minus fs-10"></i></span></span>
+                  </div>
+                </div>
+                <span *ngIf="addedBrandItems.length == 0"
+                  class="text-muted d-flex justify-content-center align-items-center h-100 fs-12">Please add a search
+                  value.</span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button *ngIf="this.isCity || this.isLocation" class="btn-gold fs-10 text-uppercase pl-4 pr-4" type="submit"
+          data-dismiss="modal" (click)="onSubmitCityLocation()">
+          Submit
+        </button>
+        <button *ngIf="this.isBrand || this.isSubBrand" class="btn-gold fs-10 text-uppercase pl-4 pr-4" type="submit"
+          data-dismiss="modal" (click)="onSubmitBuilder()">
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="nav-container">
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand">
+            <img class="img" src="./assets/Images/wc-logo.svg" alt="Card image cap">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end ml-auto" id="navbarNav">
+            <ul class="navbar-nav align-items-center justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="currentTopMenu === 1" (click)="currentMenuCheck(1)" href="#"
+                        routerLink="/">Assets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="currentTopMenu === 2" (click)="currentMenuCheck(2)" href="#"
+                        routerLink="/view-buyers">Investor's</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="currentTopMenu === 3" (click)="currentMenuCheck(3)" href="#"
+                        routerLink="/kyc-list">KYC</a>
+                </li>
+                <!-- <li class="nav-item" *ngIf="staff_id == null || staff_id == ''">
+                    <a class="nav-link" [class.active]="currentTopMenu === 2" (click)="currentMenuCheck(2)">LogIn</a>
+                </li> -->
+                <li class="nav-item">
+                    <div mdbDropdown class="dropdown">
+                        <span mdbDropdownToggle id="ddProfileIcon"
+                            class="c-pointer"> <i class="fa fa-user-circle text-white" style="font-size: 24px; margin-top: 3px"></i></span>
+                        <ul mdbDropdownMenu class="dropdown-menu mb-2 top-nav-dd" style="min-width: 4.2rem;" aria-labelledby="ddProfileIcon">
+                            <li class="c-pointer">
+                                <a class="dropdown-item" (click)="logOut()">LogOut</a>
+                                <!-- <a *ngIf="staff_id !== null && staff_id != ''" class="dropdown-item" (click)="logOut()">LogOut</a> -->
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- <div class="nav-link" mdbDropdownToggle id="ddProfileIcon" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fa fa-user-circle" style="font-size: 24px;"></i>
+                    </div>
+
+                    <div class="dropdown-menu top-nav-dd" mdbDropdownMenu aria-labelledby="ddProfileIcon"> -->
+                        <!-- <a *ngIf="!isWalletConnected()" class="dropdown-item capse-font-sm" (click)="openWalletConnectModal()">Connect Wallet</a> -->
+                        <!-- <a *ngIf="isWalletConnected()"  class="dropdown-item capse-font-sm" (click)="openWalletBalanceModal()">Wallet Balance</a> -->
+                        <!-- <a *ngIf="staff_id !== null" class="dropdown-item" (click)="logOut()">LogOut</a>
+                    </div> -->
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>

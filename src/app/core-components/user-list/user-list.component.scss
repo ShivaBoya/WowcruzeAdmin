@@ -1,0 +1,143 @@
+.custom-container {
+  height: calc(100dvh - 60px);
+}
+
+.table-dark,
+.table-dark>tr>th {
+  color: var(--color-gold);
+  background-color: var(--color-primary);
+}
+
+.table-font {
+  font-size: 12px;
+  padding: 15px 10px !important;
+  font-weight: 400;
+  text-align: center;
+  line-height: 30px;
+  white-space: pre-wrap;
+}
+.property-name{
+  width: 100%;
+}
+.table {
+  height: 70dvh;
+  overflow: scroll;
+}
+
+.table-dark {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.table-dark th {
+  border: none;
+}
+
+.table-head-font {
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+  line-height: 30px;
+  white-space: nowrap;
+}
+
+.details {
+  width: 25px !important;
+  height: 30px !important;
+  border-radius: 50% !important;
+}
+
+.table-dark th:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.table-dark th:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.inline-img {
+  position: relative;
+  background-image: url(../../../assets/Images/search-new-icon.svg);
+  background-size: 15px;
+  background-position-x: 10px;
+  background-position-y: 10px;
+  background-repeat: no-repeat;
+  text-indent: 20px;
+}
+
+.dashed-box {
+  border: 1px dashed var(--color-grey-light);
+  border-radius: 8px;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.table-display {
+  display: inline-table !important;
+}
+
+.alignment {
+  margin: auto;
+}
+
+.inline-flex {
+  display: inline-flex
+}
+
+.search-bar:focus {
+  outline: none !important;
+  border: 1px solid var(--color-primary-shade) !important;
+  box-shadow: 0 0 2px var(--color-primary-shade) !important;
+}
+
+.min-width {
+  min-width: 30%;
+}
+
+.width {
+  width: 100%;
+}
+
+.search-font {
+  font-size: 12px;
+}
+
+td,
+tr,
+th {
+  padding: 1% calc(8dvw - 50px) !important;
+}
+
+.date-font {
+  color: var(--color-danger);
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+  top: 42px;
+}
+
+
+@media only screen and (max-width:656px) {
+  .search-bar {
+    width: 12rem !important;
+  }
+
+}
+
+@media only screen and (min-width:1300px) {
+  .table {
+    height: 68dvh;
+    overflow: scroll;
+  }
+}

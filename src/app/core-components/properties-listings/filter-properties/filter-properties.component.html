@@ -1,0 +1,236 @@
+<div class="modal modal-dialog-scrollable modal-dialog-centered filter-align modal-backdrop"
+  id="propertyListingFiltersId" tabindex="-1" style="display: none">
+  <div class="modal-dialog" style="width: 80dvw; max-width: 100dvw">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="d-flex flex-row w-100 justify-content-between align-items-center">
+          <h5 class="title-font m-0" id="gridModalLabel">Filter By</h5>
+          <i (click)="closePopup()" class="fa fa-close c-pointer"></i>
+        </div>
+      </div>
+      <div class="modal-body p-3" style="max-height: 75dvh">
+        <div class="d-flex flex-wrap">
+          <div style="flex: 1; min-width: 250px" class="d-flex flex-column justify-content-start">
+            <div>
+              <div class="head-font mb-3 text-align">Sale Status</div>
+              <div class="mb-3">
+                <div class="d-flex flex-wrap mb-3 mr-0 ml-0" style="gap: 0.5rem">
+                  <div class="filter-btn m-0" *ngFor="let saleTypeItem of saleFilterType"
+                    [class.active]="currentSaleType.includes(saleTypeItem)"
+                    (click)="filterByPropertyStatusTypes(saleTypeItem, 'SALE')">
+                    {{ getStatusText(saleTypeItem, "SALE") }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="head-font mb-3 text-align">SPV Status</div>
+              <div class="mb-3">
+                <div class="d-flex flex-wrap mb-3 mr-0 ml-0" style="gap: 0.5rem">
+                  <div class="filter-btn m-0" *ngFor="let spvTypeItem of SPVFilterType"
+                    [class.active]="currentSPVType.includes(spvTypeItem)"
+                    (click)="filterByPropertyStatusTypes(spvTypeItem, 'SPV')">
+                    {{ getStatusText(spvTypeItem, "SPV") }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="head-font mb-3 text-align">Token Issue Status</div>
+              <div class="mb-3">
+                <div class="d-flex flex-wrap mb-3 mr-0 ml-0" style="gap: 0.5rem">
+                  <div class="filter-btn m-0" *ngFor="let nftTypeItem of NFTFilterType"
+                    [class.active]="currentNFTType.includes(nftTypeItem)"
+                    (click)="filterByPropertyStatusTypes(nftTypeItem, 'NFT')">
+                    {{ getStatusText(nftTypeItem, "NFT") }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="head-font mb-3 text-align">Resale Status</div>
+              <div class="mb-3">
+                <div class="d-flex flex-wrap mb-3 mr-0 ml-0" style="gap: 0.5rem">
+                  <div class="filter-btn m-0" *ngFor="let resaleTypeItem of resaleFilterType"
+                    [class.active]="currentResaleType.includes(resaleTypeItem)" (click)="
+                      filterByPropertyStatusTypes(resaleTypeItem, 'RESALE')
+                    ">
+                    {{ getStatusText(resaleTypeItem, "RESALE") }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="head-font mb-3 text-align">Asset Type</div>
+              <div class="mb-3">
+                <div class="d-flex flex-wrap mb-3 mr-0 ml-0" style="gap: 0.5rem">
+                  <div class="filter-btn m-0" *ngFor="let propertyType of propertyTypes"
+                    [class.active]="currentPropertyTypes.includes(propertyType)"
+                    (click)="filterByPropertyTypes(propertyType)">
+                    {{ propertyType }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="vr-custom"></div>
+          <div style="flex: 1; min-width: 250px" class="d-flex flex-column justify-content-start">
+            <div>
+              <div class="head-font mb-3 text-align">City</div>
+              <div class="mb-3">
+                <div class="d-flex flex-wrap mb-3 mr-0 ml-0">
+                  <div *ngFor="let city of cityArry;let i = index"
+                    class="filter-btn mb-2" [class.active]="getIsCitiesActive(city.location_id)"
+                    (click)="setCity(city.location_id,i)">
+                    {{city.label}}</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="head-font mb-3 text-align">Location</div>
+              <div class="mb-3" *ngIf="showLocality">
+                <div class="d-flex flex-wrap mb-3 mr-0 ml-0">
+                  <div *ngFor="let location of currentLocationList;let i = index" class="filter-btn mb-2"
+                    [class.active]="getIsLocationsActive(location.location_id)"
+                    (click)="setLocation(location.location_id,i)">
+                    {{location.label}}</div>
+                </div>
+                <span *ngIf="currentLocationList.length == 0"
+                  class="text-muted d-flex justify-content-center align-items-center h-100 fs-12">Please select a city
+                  to check locations.</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="head-font mb-3 text-align d-flex align-items-center flex-wrap justify-content-between">
+                Price Range
+                <span class="fs-10 text-danger" *ngIf="priceFormGroup.controls['minPrice'].hasError('min')">
+                  Minprice cannot be less than zero.</span>
+                <span class="fs-10 text-danger" *ngIf="priceFormGroup.controls['maxPrice'].hasError('max')">
+                  Minprice cannot be greater than Maxprice.</span>
+                <span class="fs-10 text-danger" *ngIf="priceFormGroup.controls['maxPrice'].hasError('min')">
+                  Maxprice cannot be less than Minprice.</span>
+                <span class="fs-10 text-danger" *ngIf="this.isPriceDetailsComplete">
+                  Maxprice or Minprice can not be empty.</span>
+              </div>
+              <div class="mb-3">
+                <div class="d-flex flex-column check-primary mb-3 btn-rd" style="align-items: flex-start !important">
+                  <label *ngFor="let priceFilter of priceRangeList; index as i" class="container-cus-radio mb-3"
+                    for="radio-price-{{ i }}" (click)="filterByPrice(priceFilter.from, priceFilter.to)">
+                    <input type="radio" id="radio-price-{{ i }}" name="radio_price" />
+                    <span class="checkmark filter-radio primary"></span>
+                    <span class="radio-content filter-text">
+                      {{ priceFilter.from }} to {{ priceFilter.to }}
+                    </span>
+                  </label>
+                  <div class="mb-3">
+                    <form [formGroup]="priceFormGroup" class="d-flex justify-content-between">
+                      <input [(ngModel)]="startPrice" (input)="onPropertyPriceChange($event)" formControlName="minPrice"
+                        class="form-control filter-input" type="number" placeholder="Min Price"
+                        (ngModelChange)="filterByCustomPrice()" min="0" max="{{ endPrice }}" />
+                      <hr style="width: 2rem" />
+                      <input [(ngModel)]="endPrice" (input)="onPropertyPriceChange($event)"
+                        class="form-control filter-input" formControlName="maxPrice" type="number"
+                        placeholder="Max Price" (ngModelChange)="filterByCustomPrice()" min="{{ startPrice }}" />
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="vr-custom"></div>
+          <div style="flex: 1; min-width: 250px" class="d-flex flex-column justify-content-start">
+            <div>
+              <div class="head-font mb-3 text-align">Search By Asset Id</div>
+              <div class="mb-3">
+                <div class="d-flex justify-content-start align-items-center mb-2">
+                  <input (input)="onPropertyIdInputChange($event)" class="form-control m-0 filter-input text-left"
+                    type="number" placeholder="" (keyup.enter)="
+                      setSearchByFilterItem(searchPropertyId, 'asset_id')
+                    " #searchPropertyId />
+                  <div class="badge badge-primary-bold p-2 ml-2" type="submit" [class.disabled]="isPropertyIdEmpty"
+                    (click)="
+                      setSearchByFilterItem(searchPropertyId, 'asset_id')
+                    ">
+                    <span class="fs-10">Add</span>
+                  </div>
+                </div>
+                <div class="location-box">
+                  <div class="d-flex flex-wrap" *ngIf="propertyIdSearchItems.length != 0">
+                    <div class="filter-btn mb-2" *ngFor="let searchItem of propertyIdSearchItems">
+                      <span class="mr-2">{{ searchItem }}</span>
+                      <span class="badge badge-danger-bold badge-minus" (click)="
+                          removeSearchByFilterItem(searchItem, 'asset_id')
+                        ">
+                        <span><i class="fa fa-minus fs-10"></i></span></span>
+                    </div>
+                  </div>
+                  <span *ngIf="propertyIdSearchItems.length == 0"
+                    class="text-muted d-flex justify-content-center align-items-center h-100 fs-12">Please add a search
+                    value.</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="head-font mb-3 text-align">
+                Search By Asset Name
+              </div>
+              <div class="mb-3">
+                <div class="d-flex justify-content-start align-items-center mb-2">
+                  <input (input)="onPropertyNameInputChange($event)" class="form-control m-0 filter-input text-left"
+                    type="text" placeholder="" (keyup.enter)="
+                      setSearchByFilterItem(searchPropertyName, 'asset_name')
+                    " #searchPropertyName />
+                  <div class="badge badge-primary-bold p-2 ml-2" type="submit" [class.disabled]="isPropertyNameEmpty"
+                    (click)="
+                      setSearchByFilterItem(searchPropertyName, 'asset_name')
+                    ">
+                    <span class="fs-10">Add</span>
+                  </div>
+                </div>
+                <div class="location-box">
+                  <div class="d-flex flex-wrap" *ngIf="propertyNameSearchItems.length != 0">
+                    <div class="filter-btn mb-2" *ngFor="let searchItem of propertyNameSearchItems">
+                      <span class="mr-2">{{ searchItem }}</span>
+                      <span class="badge badge-danger-bold badge-minus" (click)="
+                          removeSearchByFilterItem(searchItem, 'asset_name')
+                        ">
+                        <span><i class="fa fa-minus fs-10"></i></span></span>
+                    </div>
+                  </div>
+                  <span *ngIf="propertyNameSearchItems.length == 0"
+                    class="text-muted d-flex justify-content-center align-items-center h-100 fs-12">Please add a search
+                    value.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div>
+              <div class="head-font mb-3 text-align">Builder Name</div>
+              <div class="mb-3">
+                <div class="d-flex flex-wrap mb-3 mr-0 ml-0" style="gap: 0.5rem">
+                  <div class="filter-btn m-0" *ngFor="
+                      let builderItem of cityAndBuildersDetails.builder_filters
+                    " [class.active]="currentBuilders.includes(builderItem)" (click)="filterByBuilders(builderItem)">
+                    {{ builderItem.builder_name }}
+                  </div>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer m-0">
+        <div class="badge badge-primary-bold mr-2" type="submit" [class.disabled]="disableApplyButtonCondition"
+          (click)="disableApplyButtonCondition || applyFilter()">
+          Apply
+        </div>
+        <div class="badge badge-danger-bold" type="submit" [class.disabled]="disableApplyButtonCondition"
+          (click)="clearFilter()">
+          Clear
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

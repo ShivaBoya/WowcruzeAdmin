@@ -1,0 +1,106 @@
+.custom-container {
+  height: calc(100dvh - 60px);
+}
+
+.table-font {
+  font-size: 12px;
+  padding: 15px 10px !important;
+  font-weight: 400;
+  text-align: center;
+  line-height: 30px;
+  white-space: pre-wrap;
+}
+
+.table-dark,
+.table-dark>tr>th {
+  color: var(--color-gold);
+  background-color: var(--color-primary);
+}
+
+.table {
+  height: inherit;
+  overflow: scroll;
+}
+
+.table-dark {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.table-dark th {
+  border: none;
+}
+
+.table-head-font {
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+  line-height: 30px;
+  white-space: nowrap;
+}
+
+.table-dark th:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.table-dark th:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.dropdown-p {
+  position: absolute;
+  // left: 733px;
+  // top: 263px;
+  text-align: center;
+}
+
+.margin-span {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page-link {
+  font-size: 12px !important;
+}
+
+.property-name {
+  width: 100%;
+}
+
+.date-font {
+  color: var(--color-danger);
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+  top: 42px;
+}
+
+@media only screen and (max-width:512px) {
+  .flex-control>* {
+    margin: 0.5rem 0rem !important;
+  }
+
+  .pagination-align {
+    justify-content: center !important;
+  }
+}
+
+
+@media only screen and (min-width:1300px) {
+  .table {
+    height: 68dvh;
+    overflow: scroll;
+  }
+}

@@ -1,0 +1,32 @@
+.filter-align {
+    z-index: 2;
+    background-color: var(--color-white);
+    max-height: 100%;
+}
+.filter-input {
+    font-size: 12px;
+    padding: 0.25rem 0.25rem;
+    text-align: center;
+    height: auto;
+}
+.location-box {
+    max-height: 10dvh;
+    overflow: scroll;
+    border: 1px dashed var(--color-grey-light);
+    border-radius: 5px;
+    height: 10dvh;
+    padding: 0.5rem;
+    text-align: center;
+}
+.vr-custom {
+    display: block;
+}
+.active {
+    background-color: var(--color-primary-shade);
+    box-shadow: none !important;
+    color: var(--color-white);
+}
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }

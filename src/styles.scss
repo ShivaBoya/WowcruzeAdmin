@@ -1,0 +1,528 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "node_modules/font-awesome/scss/font-awesome.scss";
+@import "node_modules/mdb-angular-ui-kit/assets/scss/mdb.scss";
+
+
+:root {
+    --color-primary: #091526;
+    --color-light-primary-hover: #08195614;
+    --color-primary-shade: #081956;
+    --color-light-primary: #0819561c;
+    --color-white: #ffffff;
+    --color-gold: #CBA328;
+    --color-gold-hover: #d7ac2a;
+    --color-gold-border: #d7ac2a;
+    --color-grey: #F5F5F5;
+    --color-light-grey: #e5e5e5;
+    --color-grey-shadow: #f8f1f1;
+    --color-grey-light: rgba(8, 25, 86, 0.2);
+    --color-success: #0acf97;
+    --color-success-hover: #0bdda1;
+    --color-light-success: #e7faf5;
+    --color-danger: #fa5c7c;
+    --color-light-danger: #f3dde1;
+    --color-warning: #ffc35a;
+    --color-light-warning: #fbecd2;
+    --color-backdrop: #0000001d;
+}
+
+body {
+    font-family: 'Poppins', sans-serif !important;
+}
+
+input:hover,
+input:active,
+input:focus {
+    outline: none !important;
+    border: 1px solid var(--color-primary-shade) !important;
+    box-shadow: 0 0 2px var(--color-white) !important;
+}
+
+.modal-backdrop {
+    background-color: var(--color-backdrop) !important;
+}
+
+.bg-main {
+    background-color: var(--color-grey);
+    width: 100%;
+    height: 100%;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn {
+    // -ms-touch-action: manipulation;
+    // touch-action: manipulation;
+    cursor: pointer;
+    // -webkit-user-select: none;
+    // -moz-user-select: none;
+    // -ms-user-select: none;
+    // user-select: none;
+}
+
+.nav-item .active {
+    color: var(--color-gold) !important;
+}
+
+.text-f {
+    font-family: "Poppins", sans-serif;
+}
+
+input[type='radio']:checked:after {
+    content: '';
+    background-color: var(--color-primary) !important;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    top: -5px;
+    position: relative;
+    display: inline-block;
+    visibility: visible;
+    border: 2px solid var(--color-white);
+}
+
+/* Hiding the initial checkbox */
+input[type=checkbox] {
+    visibility: hidden;
+}
+
+.filter-btn {
+    justify-content: center;
+    cursor: pointer;
+    align-items: center;
+    padding: 6.00643px 10.0129px;
+    border: 1px solid var(--color-grey-light);
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 100%;
+    color: var(--color-primary-shade);
+    background-color: transparent;
+    width: max-content;
+}
+
+.filter-btn:hover,
+.filter-btn:after {
+    background-color: var(--color-primary-shade);
+    box-shadow: none !important;
+    color: var(--color-white);
+}
+
+.title-font {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 100%;
+    color: var(--color-primary-shade);
+}
+
+.form-control:focus {
+    color: var(--color-primary-shade);
+    outline: none !important;
+    border: 1px solid var(--color-primary-shade) !important;
+    box-shadow: 0 0 2px var(--color-white) !important;
+}
+
+.form-control:hover {
+    color: var(--color-primary-shade);
+    outline: none !important;
+    border: 1px solid var(--color-primary-shade) !important;
+    box-shadow: 0 0 2px var(--color-white) !important;
+}
+
+.table tr:hover {
+    background-color: var(--color-light-primary-hover);
+}
+
+.badge {
+    display: flex;
+    justify-content: center;
+    border-radius: 5px !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+    padding: 0.4rem 1rem !important;
+    width: min-content !important;
+}
+
+.badge-success {
+    color: var(--color-success) !important;
+    background-color: var(--color-light-success) !important;
+}
+
+.badge-success-bold {
+    color: var(--color-white);
+    background-color: var(--color-success);
+}
+
+.badge-success-bold:hover {
+    cursor: pointer;
+    background-color: var(--color-success-hover);
+}
+
+.badge-primary {
+    color: var(--color-primary-shade) !important;
+    background-color: var(--color-light-primary) !important;
+}
+
+.badge-primary i {
+    color: var(--color-primary-shade) !important;
+}
+
+.badge-light-grey {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: var(--color-primary) !important;
+}
+
+.badge-primary-bold {
+    color: var(--color-white);
+    background-color: var(--color-primary);
+}
+
+.badge-primary-bold:hover {
+    cursor: pointer;
+    background-color: var(--color-primary-shade);
+}
+
+.badge-danger {
+    color: var(--color-danger);
+    background-color: var(--color-light-danger);
+}
+
+.badge-danger-bold {
+    color: var(--color-white);
+    background-color: var(--color-danger);
+}
+
+.badge-warning {
+    color: var(--color-warning);
+    background-color: var(--color-light-warning);
+}
+
+.badge-gold {
+    color: var(--color-warning);
+    background-color: var(--color-light-warning);
+}
+
+.badge-gold-bold {
+    color: var(--color-white);
+    background-color: var(--color-gold);
+}
+
+.badge-gold-bold:hover {
+    cursor: pointer;
+    background-color: var(--color-gold-hover);
+}
+
+.badge-minus {
+    border-radius: 50% !important;
+    width: 15px !important;
+    height: 15px;
+    padding: 0 !important;
+    margin: 0 !important;
+    padding-top: 2px !important;
+}
+
+.badge-minus-pulse {
+    border-radius: 50% !important;
+    width: 25px !important;
+    height: 25px;
+    padding: 0 !important;
+    margin: 0 !important;
+    padding-top: 7px !important;
+}
+
+.btn-gold {
+    width: auto;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-gold);
+    font-family: 'Poppins';
+    border: 1px solid var(--color-gold);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    text-align: center;
+    color: var(--color-white);
+    border-radius: 4px;
+    outline: 0;
+}
+
+.btn-gold:hover {
+    background-color: var(--color-gold-hover);
+    border: 1px solid var(--color-gold-hover);
+}
+
+
+.label-text {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    // color: var(--color-grey-shadow);
+}
+
+.text-muted {
+    color: var(--color-grey-shadow);
+}
+
+.text-btn-gold {
+    color: var(--color-gold);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.text-btn-gold:hover {
+    color: var(--color-gold-hover)
+}
+
+.c-pointer {
+    cursor: pointer;
+}
+
+.text-gold {
+    color: var(--color-gold) !important;
+}
+
+
+.text-blue {
+    color: var(--color-primary-shade) !important;
+}
+
+.loader-parent {
+    z-index: 1051;
+    top: 46.5%;
+    left: 46.5%;
+    position: absolute;
+    background-color: var(--color-light-primary);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.loader {
+    border: 4px solid var(--color-white);
+    border-top: 4px solid var(--color-gold);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 0.8s linear infinite;
+}
+
+.capse-font-sm {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 100%;
+    color: var(--color_primary);
+}
+
+.vr-custom {
+    margin: 0rem 1rem !important;
+    border: 0.5px solid var(--color-grey-light) !important;
+}
+
+.head-font {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 21px;
+    color: var(--color-primary-shade);
+    text-transform: capitalize;
+}
+
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.container-cus-radio {
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+
+
+.container-cus-radio input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+    position: absolute;
+    top: auto;
+    left: auto;
+    margin-top: 5px;
+    scale: 1.1;
+    height: 15px;
+    width: 15px;
+    border: 1px solid var(--color-tertiary-border);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+
+/* On mouse-over, add a grey background color */
+.container-cus-radio:hover input~.checkmark {
+    background-color: var(--color-tertiary-hover);
+    opacity: 0.75;
+}
+
+
+
+/* When the radio button is checked, add a blue background */
+.container-cus-radio input:checked~.checkmark {
+    background-color: var(--color_tertiary);
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container-cus-radio input:checked~.checkmark:after {
+    display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container-cus-radio .checkmark:after {
+    top: 3px;
+    left: 3px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: white;
+}
+
+.container-cus-radio>.radio-content {
+    margin-left: 25px;
+}
+
+
+.check-primary {
+    .checkmark {
+        border: 1px solid var(--color-primary);
+    }
+
+    .container-cus-radio:hover input~.checkmark {
+        background-color: var(--color-light-primary);
+        opacity: 0.75;
+    }
+
+    .container-cus-radio input:checked~.checkmark {
+        background-color: var(--color-primary-shade);
+    }
+}
+
+.pagination {
+    justify-content: right;
+    align-items: center;
+    margin-top: 1rem;
+    display: flex;
+    font-size: 12px;
+    font-family: 'Poppins' !important;
+}
+
+.pagination a {
+    text-decoration: none;
+}
+
+.ngx-pagination .current {
+    background: var(--color-primary) !important;
+    border-radius: 5px !important;
+}
+
+// select,
+// .form-select {
+//     border: 1px solid var(--color-primary) !important;
+// }
+
+.form-select:hover,
+.form-select:active {
+    border: 1px solid var(--color-primary) !important;
+    background-color: transparent !important;
+    box-sizing: unset !important;
+    outline: 0px !important;
+    box-shadow: none !important
+}
+
+// .form-select option {
+//     border: 1px solid var(--color-primary) !important;
+//     background-color: transparent !important;
+//     outline: 0px !important;
+// }
+
+.ngx-pagination {
+    padding: 0 !important;
+}
+
+
+
+
+.rotate {
+    animation: tableLoader 2s infinite linear;
+}
+
+.text-red {
+    color: var(--color-danger) !important;
+}
+
+.text-green {
+    color: var(--color-success) !important;
+}
+
+.text-primary {
+    color: var(--color-primary-shade) !important;
+}
+
+
+button:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
+.fs-10 {
+    font-size: 10px !important;
+}
+
+.fs-12 {
+    font-size: 12px !important;
+}
+
+.fs-14 {
+    font-size: 14px !important;
+}
+
+.fw-500 {
+    font-weight: 500 !important;
+}
+
+
+
+@keyframes tableLoader {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(359deg);
+    }
+}
