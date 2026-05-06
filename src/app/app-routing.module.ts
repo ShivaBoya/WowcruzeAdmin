@@ -9,6 +9,11 @@ import { LoginGuard } from './guards/login.guard';
 import { UserListComponent } from './core-components/user-list/user-list.component';
 import { BuyersProfileComponent } from './core-components/buyers-profile/buyers-profile.component';
 import { ViewBuyersComponent } from './core-components/view-buyers/view-buyers.component';
+import { AdminManagementComponent } from './core-components/admin-management/admin-management.component';
+import { UserManagementComponent } from './core-components/user-management/user-management.component';
+import { AddAdminComponent } from './core-components/admin-management/add-admin-page/add-admin-page.component';
+import { MyProfileComponent } from './core-components/my-profile/my-profile.component';
+import { EditAdminComponent } from './core-components/admin-management/edit-admin-page/edit-admin-page.component';
 
 const routes: Routes = [
   {
@@ -24,6 +29,11 @@ const routes: Routes = [
       {path: 'profile/:id', component: BuyersProfileComponent},
       {path: 'view-buyers', component: ViewBuyersComponent},
       {path: 'view-buyers/:id', component: ViewBuyersComponent},
+      {path: 'admin-management', component: AdminManagementComponent},
+      {path: 'user-management', component: UserManagementComponent},
+      {path: 'add-admin', component: AddAdminComponent},
+      {path: 'my-profile', component: MyProfileComponent},
+      {path: 'edit-admin/:id', component: EditAdminComponent},
       
     ],
   

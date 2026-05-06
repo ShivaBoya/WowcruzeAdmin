@@ -1,0 +1,99 @@
+<div class="edit-admin-container">
+    <div class="page-header">
+        <div class="title-section">
+            <button class="btn-back" (click)="goBack()">
+                <i class="fa fa-arrow-left"></i>
+            </button>
+            <h2 class="title-font">Edit Administrator</h2>
+        </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+    </div>
+
+    <form class="admin-form" (ngSubmit)="onSubmit()" #adminForm="ngForm" *ngIf="profile">
+        <div class="form-grid">
+            <!-- Basic Details -->
+            <div class="form-section">
+                <h5 class="section-title title-font"><i class="fa fa-user"></i> Basic Details</h5>
+                <div class="profile-pic-upload">
+                    <div class="current-pic">
+                        <img [src]="profile.profile_pic?.Key ? profile.profile_pic.Key : './assets/Images/user-circle.svg'" alt="Profile">
+                    </div>
+                    <div class="upload-controls">
+                        <label for="profile_pic" class="btn-outline">Change Photo</label>
+                        <input type="file" id="profile_pic" (change)="onFileChange($event)" hidden>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" [(ngModel)]="profile.name" name="name" required placeholder="Enter full name">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Email Address *</label>
+                        <input type="email" [(ngModel)]="profile.email" name="email" required placeholder="email@example.com">
+                    </div>
+                    <div class="form-group half">
+                        <label>Password (Leave blank to keep current)</label>
+                        <input type="password" [(ngModel)]="profile.password" name="password" placeholder="Enter new password">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Mobile Number *</label>
+                        <div class="mobile-input">
+                            <input type="text" [(ngModel)]="profile.country_code" name="country_code" class="code" placeholder="+91">
+                            <input type="text" [(ngModel)]="profile.mobile" name="mobile" class="num" required placeholder="Number">
+                        </div>
+                    </div>
+                    <div class="form-group half">
+                        <label>Date of Birth</label>
+                        <input type="date" [(ngModel)]="profile.dob" name="dob">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Gender</label>
+                        <select [(ngModel)]="profile.gender" name="gender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group half">
+                        <label>Account Status</label>
+                        <select [(ngModel)]="profile.active" name="active">
+                            <option [ngValue]="1">Active</option>
+                            <option [ngValue]="0">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permissions -->
+            <div class="form-section">
+                <h5 class="section-title title-font"><i class="fa fa-shield"></i> Access Permissions</h5>
+                <div class="permissions-grid">
+                    <div class="permission-checkbox" *ngFor="let perm of permissionList">
+                        <label class="checkbox-container">
+                            <input type="checkbox" [(ngModel)]="profile.permissions[perm.key]" [name]="perm.key">
+                            <span class="checkmark"></span>
+                            <span class="label-text">{{ perm.label }}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="goBack()">Cancel</button>
+            <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+    </form>
+</div>

@@ -37,6 +37,12 @@ import { DatePipe } from '@angular/common';
 import { ViewBuyersComponent } from './core-components/view-buyers/view-buyers.component';
 import { BuyersFilterComponent } from './core-components/view-buyers/buyers-filter/buyers-filter.component';
 import { KycFilterComponent } from './core-components/user-list/kyc-filter/kyc-filter.component';
+import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
+import { AdminManagementComponent } from './core-components/admin-management/admin-management.component';
+import { UserManagementComponent } from './core-components/user-management/user-management.component';
+import { AddAdminComponent } from './core-components/admin-management/add-admin-page/add-admin-page.component';
+import { MyProfileComponent } from './core-components/my-profile/my-profile.component';
+import { EditAdminComponent } from './core-components/admin-management/edit-admin-page/edit-admin-page.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +59,12 @@ import { KycFilterComponent } from './core-components/user-list/kyc-filter/kyc-f
     ViewBuyersComponent,
     BuyersFilterComponent,
     KycFilterComponent,
+    SidebarComponent,
+    AdminManagementComponent,
+    UserManagementComponent,
+    AddAdminComponent,
+    MyProfileComponent,
+    EditAdminComponent,
   ],
   imports: [
     BrowserModule,

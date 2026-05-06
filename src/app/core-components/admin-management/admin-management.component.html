@@ -1,0 +1,56 @@
+<div class="admin-management-container">
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+    </div>
+    <div class="header-section">
+        <div class="search-bar">
+            <i class="fa fa-search"></i>
+            <input type="text" [(ngModel)]="searchInput" (keyup.enter)="onSearch()" placeholder="Search By Admin Name, Email, Mobile No">
+        </div>
+        <button class="btn-gold" (click)="addAdmin()">
+            <i class="fa fa-plus"></i> Add Admin
+        </button>
+    </div>
+
+    <div class="admin-cards">
+        <div class="admin-card" *ngFor="let admin of admins">
+            <div class="card-header">
+                <div class="profile-info">
+                    <img [src]="admin.profile_pic?.Key ? admin.profile_pic.Key : './assets/Images/user-circle.svg'" alt="Profile" class="profile-img">
+                    <div class="details">
+                        <span class="role text-gold">
+                            <i class="fa" [ngClass]="admin.permissions.add_admin ? 'fa-shield' : 'fa-user-shield'"></i> 
+                            {{ admin.permissions.add_admin ? 'Super Admin' : 'Admin' }}
+                        </span>
+                        <span class="admin-id">Admin Id: {{admin.staff_id}}</span>
+                        <span class="admin-name">Admin Name: {{admin.name}}</span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="btn-icon" (click)="editAdmin(admin.staff_id)" title="Edit Administrator">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="permissions-list">
+                <div class="permission-item">
+                    <span>Create Admin</span>
+                    <i class="fa fa-check-circle" [class.enabled]="admin.permissions.add_admin"></i>
+                </div>
+                <div class="permission-item">
+                    <span>Edit Admin</span>
+                    <i class="fa fa-check-circle" [class.enabled]="admin.permissions.edit_admin"></i>
+                </div>
+                <div class="permission-item">
+                    <span>View Admin</span>
+                    <i class="fa fa-check-circle" [class.enabled]="admin.permissions.view_admin"></i>
+                </div>
+                <div class="permission-item">
+                    <span>Delete Admin</span>
+                    <i class="fa fa-check-circle" [class.enabled]="admin.permissions.delete_admin"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

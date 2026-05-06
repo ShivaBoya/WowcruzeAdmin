@@ -1,0 +1,49 @@
+<div class="user-management-container">
+    <div class="header-section">
+        <h2 class="title-font">User Management</h2>
+        <div class="search-bar">
+            <i class="fa fa-search"></i>
+            <input type="text" [(ngModel)]="searchInput" (keyup.enter)="onSearch()" placeholder="Search By User Name, Email, Mobile No">
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table custom-table">
+            <thead>
+                <tr>
+                    <th>Sl.No.</th>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>KYC Status</th>
+                    <th>Wallet</th>
+                    <th>Joined Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of users | paginate: { itemsPerPage: pageSize, currentPage: page, totalItems: totalUsers }; let i = index">
+                    <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ user.user_id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.mobile }}</td>
+                    <td>
+                        <span class="badge" [ngClass]="{
+                            'badge-success': user.kyc_status === 'Verified',
+                            'badge-warning': user.kyc_status === 'In Review',
+                            'badge-danger': user.kyc_status === 'Rejected',
+                            'badge-primary': user.kyc_status === 'Not Verified'
+                        }">{{ user.kyc_status }}</span>
+                    </td>
+                    <td>{{ user.wallet ? (user.wallet | slice:0:6) + '...' + (user.wallet | slice:-4) : 'N/A' }}</td>
+                    <td>{{ user.created_at | date: 'yyyy-MM-dd' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-container">
+        <pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>
+    </div>
+</div>

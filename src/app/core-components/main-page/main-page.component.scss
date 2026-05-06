@@ -1,5 +1,14 @@
-.main {
-    width: 97dvw;
-    height: 100%;
-    margin-top: 60px;
+.app-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--color-grey);
+}
+
+.main-content {
+    flex-grow: 1;
+    margin-left: 260px; // Matches sidebar width
+    padding: 30px;
+    height: 100vh;
+    overflow-y: auto;
 }

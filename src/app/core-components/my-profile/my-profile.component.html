@@ -1,0 +1,63 @@
+<div class="profile-page-container">
+    <div class="page-header">
+        <h2 class="title-font">My Profile</h2>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+    </div>
+
+    <div class="profile-content" *ngIf="adminProfile">
+        <div class="profile-card hero-card">
+            <div class="profile-hero-content">
+                <div class="profile-avatar">
+                    <img [src]="adminProfile.profile_pic?.Key ? adminProfile.profile_pic.Key : './assets/Images/user-circle.svg'" alt="Profile Pic">
+                </div>
+                <div class="profile-main-info">
+                    <h1 class="admin-name">{{ adminProfile.name }}</h1>
+                    <span class="admin-id">Admin ID: {{ adminProfile.staff_id }}</span>
+                    <div class="role-badge" [class.admin-badge]="!adminProfile.permissions?.add_admin">
+                        <i class="fa" [ngClass]="adminProfile.permissions?.add_admin ? 'fa-shield' : 'fa-user-shield'"></i> 
+                        {{ adminProfile.permissions?.add_admin ? 'Super Admin' : 'Admin' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-grid">
+            <div class="profile-card info-card">
+                <h5 class="section-title title-font"><i class="fa fa-info-circle"></i> Personal Details</h5>
+                <div class="info-list">
+                    <div class="info-item">
+                        <label>Email Address</label>
+                        <span>{{ adminProfile.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Mobile Number</label>
+                        <span>{{ adminProfile.country_code }} {{ adminProfile.mobile }}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Gender</label>
+                        <span>{{ adminProfile.gender }}</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Date of Birth</label>
+                        <span>{{ adminProfile.dob | date: 'dd MMM yyyy' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-card permissions-card">
+                <h5 class="section-title title-font"><i class="fa fa-shield"></i> Access Permissions</h5>
+                <div class="permissions-list">
+                    <div class="permission-item" *ngFor="let perm of permissionList">
+                        <div class="perm-status" [class.enabled]="adminProfile.permissions[perm.key]">
+                            <i class="fa" [ngClass]="adminProfile.permissions[perm.key] ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                        </div>
+                        <span class="perm-label">{{ perm.label }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

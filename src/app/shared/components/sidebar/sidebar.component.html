@@ -1,0 +1,34 @@
+<div class="sidebar">
+    <div class="logo-section">
+        <img src="./assets/Images/wc-logo.svg" alt="WowCruze">
+    </div>
+
+    <div class="menu-items">
+        <div class="menu-item" [class.active]="activeMenu === 'profile'" (click)="navigate('/my-profile', 'profile')">
+            <i class="fa fa-user-circle"></i>
+            <span>My Profile</span>
+        </div>
+
+        <div class="menu-item" [class.active]="activeMenu === 'users'" (click)="navigate('/user-management', 'users')">
+            <i class="fa fa-users"></i>
+            <span>User Management</span>
+        </div>
+
+        <div class="menu-item" [class.active]="activeMenu === 'assets'" (click)="navigate('/', 'assets')">
+            <i class="fa fa-car"></i>
+            <span>Asset Management</span>
+        </div>
+
+        <div class="menu-item" [class.active]="activeMenu === 'admins'" (click)="navigate('/admin-management', 'admins')">
+            <i class="fa fa-user-shield"></i>
+            <span>Admin Management</span>
+        </div>
+    </div>
+
+    <div class="logout-container" (click)="logOut()">
+        <button class="logout-btn">
+            <i class="fa fa-sign-out"></i>
+            <span>Logout</span>
+        </button>
+    </div>
+</div>

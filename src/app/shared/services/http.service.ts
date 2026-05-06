@@ -23,34 +23,37 @@ export class HttpService {
 
     getFormattedErrorCode(error: any): string {
         let return_response: string = "";
-        let request_string = typeof error.error == 'string' ? error.error.toLowerCase() : error.error.code;
-        switch (request_string) {
-            case ("User Phone number is not yet registered").toLowerCase():
-                return_response = "USER_NOT_REGISTERED";
-                break;
+        let request_string = "";
 
+        if (error.error && error.error.data) {
+            request_string = error.error.data;
+        } else if (typeof error.error == 'string') {
+            request_string = error.error;
+        } else if (error.error && error.error.code) {
+            request_string = error.error.code;
+        } else {
+            request_string = error.message || "Unknown error";
+        }
+
+        const lowerRequest = request_string.toLowerCase();
+
+        switch (lowerRequest) {
+            case ("User Phone number is not yet registered").toLowerCase():
+                return_response = "User Phone number is not yet registered";
+                break;
             case ("Invalid Status").toLowerCase():
                 return_response = `Invalid status`;
                 break;
-
-            case "ER_PARSE_ERROR":
-                return_response = `Invalid SQL Server Error`;
+            case "er_parse_error":
+                return_response = `Database Server Error`;
                 break;
-
-            case "invalid property update, spv not yet formed":
-                return_response = "Invalid property update, SPV not yet Formed";
-                break;
-
-            case "at web3, returned error: execution reverted: nft is not issued yet":
-                return_response = "Invalid property update, Token not yet issued";
-                break;
-
-            case "at web3, returned error: execution reverted: invalid status - already at the same state":
-                return_response = "Invalid property update, Already at the same state";
-                break;
-
             default:
-                return_response = `SOMETHING_WENT_WRONG, ${request_string}`;
+                // If it's a specific message from our backend, return it as is
+                if (request_string.length > 5 && !request_string.includes("SOMETHING_WENT_WRONG")) {
+                    return_response = request_string;
+                } else {
+                    return_response = `Something went wrong. Please try again.`;
+                }
                 break;
         }
         return return_response;
@@ -565,6 +568,130 @@ export class HttpService {
                 );
             } catch (error) {
                 reject(error);
+            }
+        });
+    }
+
+    getAdmins(filters: any = {}): Promise<any> {
+        let url = `${web2configurations.API_URL}/wc-admin/get-admins`;
+        return new Promise<any>((resolve, reject) => {
+            try {
+                let body = {
+                    filters: filters,
+                    admin_id: localStorage.getItem('staff_id')
+                };
+                this.http.post(url, body, { headers: this.getApiHeader() }).subscribe(
+                    (response: any) => {
+                        resolve(response.data);
+                    },
+                    (error: any) => {
+                        reject(this.getFormattedErrorCode(error));
+                    }
+                );
+            } catch (error) {
+                reject(this.getFormattedErrorCode(error));
+            }
+        });
+    }
+
+    addAdmin(payload: any): Promise<any> {
+        let url = `${web2configurations.API_URL}/wc-admin/add-admin`;
+        return new Promise<any>((resolve, reject) => {
+            try {
+                payload.admin_id = localStorage.getItem('staff_id');
+                this.http.post(url, payload, { headers: this.getApiHeader() }).subscribe(
+                    (response: any) => {
+                        resolve(response.data);
+                    },
+                    (error: any) => {
+                        reject(this.getFormattedErrorCode(error));
+                    }
+                );
+            } catch (error) {
+                reject(this.getFormattedErrorCode(error));
+            }
+        });
+    }
+
+    editAdmin(payload: any): Promise<any> {
+        let url = `${web2configurations.API_URL}/wc-admin/edit-admin`;
+        return new Promise<any>((resolve, reject) => {
+            try {
+                payload.admin_id = localStorage.getItem('staff_id');
+                this.http.post(url, payload, { headers: this.getApiHeader() }).subscribe(
+                    (response: any) => {
+                        resolve(response.data);
+                    },
+                    (error: any) => {
+                        reject(this.getFormattedErrorCode(error));
+                    }
+                );
+            } catch (error) {
+                reject(this.getFormattedErrorCode(error));
+            }
+        });
+    }
+
+    getUsers(filters: any = {}, page: number = 1, pageSize: number = 10): Promise<any> {
+        let url = `${web2configurations.API_URL}/wc-admin/get-users`;
+        return new Promise<any>((resolve, reject) => {
+            try {
+                let body = {
+                    filters: filters,
+                    page: page,
+                    pageSize: pageSize,
+                    admin_id: localStorage.getItem('staff_id')
+                };
+                this.http.post(url, body, { headers: this.getApiHeader() }).subscribe(
+                    (response: any) => {
+                        resolve(response.data);
+                    },
+                    (error: any) => {
+                        reject(this.getFormattedErrorCode(error));
+                    }
+                );
+            } catch (error) {
+                reject(this.getFormattedErrorCode(error));
+            }
+        });
+    }
+
+    fetchAdminProfile(): Promise<any> {
+        let url = `${web2configurations.API_URL}/wc-admin/fetch-admin-profile`;
+        return new Promise<any>((resolve, reject) => {
+            try {
+                let body = {
+                    admin_id: localStorage.getItem('staff_id')
+                };
+                this.http.post(url, body, { headers: this.getApiHeader() }).subscribe(
+                    (response: any) => {
+                        resolve(response.data);
+                    },
+                    (error: any) => {
+                        reject(this.getFormattedErrorCode(error));
+                    }
+                );
+            } catch (error) {
+                reject(this.getFormattedErrorCode(error));
+            }
+        });
+    }
+
+    fetchAdminProfileByID(target_admin_id: string): Promise<any> {
+        const admin_id = localStorage.getItem('staff_id');
+        let url = `${web2configurations.API_URL}/wc-admin/get-admin-details?staff_id=${target_admin_id}&admin_id=${admin_id}`;
+        return new Promise<any>((resolve, reject) => {
+            try {
+                this.http.get(url, { headers: this.getApiHeader() }).subscribe(
+                    (response: any) => {
+                        resolve(response.data);
+                    },
+                    (error: any) => {
+                        reject(this.getFormattedErrorCode(error));
+                    }
+                );
+            } catch (error) {
+                reject(this.getFormattedErrorCode(error));
             }
         });
     }

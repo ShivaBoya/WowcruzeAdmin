@@ -1,0 +1,88 @@
+<div class="add-admin-page">
+    <div class="page-header">
+        <div class="header-left">
+            <button class="btn-back" (click)="goBack()">
+                <i class="fa fa-arrow-left"></i>
+            </button>
+            <h2 class="title-font">Add New Admin</h2>
+        </div>
+        <div class="header-right">
+            <button class="btn btn-outline-secondary mr-2" (click)="goBack()">Cancel</button>
+            <button class="btn btn-gold" (click)="onSubmit()">Save Admin</button>
+        </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger mb-4">
+        {{ errorMessage }}
+    </div>
+
+    <div class="form-container">
+        <div class="form-card main-form">
+            <h5 class="section-title title-font"><i class="fa fa-user"></i> Admin Details</h5>
+            <form #adminForm="ngForm">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control custom-input" [(ngModel)]="profile.name" name="name" required placeholder="Enter full name">
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control custom-input" [(ngModel)]="profile.email" name="email" required placeholder="Enter email address">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control custom-input" [(ngModel)]="profile.password" name="password" required placeholder="Create password">
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                        <div class="input-group custom-input-group">
+                            <span class="input-group-text">{{ profile.country_code }}</span>
+                            <input type="text" class="form-control" [(ngModel)]="profile.mobile" name="mobile" required placeholder="10 digit mobile">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control custom-input" [(ngModel)]="profile.dob" name="dob">
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Gender</label>
+                        <select class="form-select custom-input" [(ngModel)]="profile.gender" name="gender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-0">
+                    <label class="form-label">Profile Picture</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" class="form-control custom-input" (change)="onFileChange($event)" accept="image/*">
+                        <small class="text-muted mt-2 d-block">Recommended size: 200x200px</small>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-card permissions-form">
+            <h5 class="section-title title-font"><i class="fa fa-lock"></i> Assign Permissions</h5>
+            <p class="section-desc">Select the specific access levels for this administrator.</p>
+            
+            <div class="permissions-grid">
+                <div class="permission-checkbox" *ngFor="let perm of permissionList">
+                    <label class="checkbox-container">
+                        <input type="checkbox" [(ngModel)]="permissions[perm.key]" [name]="perm.key">
+                        <span class="checkmark"></span>
+                        <span class="label-text">{{ perm.label }}</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
