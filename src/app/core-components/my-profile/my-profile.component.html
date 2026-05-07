@@ -16,9 +16,9 @@
                 <div class="profile-main-info">
                     <h1 class="admin-name">{{ adminProfile.name }}</h1>
                     <span class="admin-id">Admin ID: {{ adminProfile.staff_id }}</span>
-                    <div class="role-badge" [class.admin-badge]="!adminProfile.permissions?.add_admin">
-                        <i class="fa" [ngClass]="adminProfile.permissions?.add_admin ? 'fa-shield' : 'fa-user-shield'"></i> 
-                        {{ adminProfile.permissions?.add_admin ? 'Super Admin' : 'Admin' }}
+                    <div class="role-badge" [class.admin-badge]="adminProfile.staff_id != 3 && adminProfile.staff_id != 11">
+                        <i class="fa" [ngClass]="(adminProfile.staff_id == 3 || adminProfile.staff_id == 11) ? 'fa-shield' : 'fa-user-shield'"></i> 
+                        {{ (adminProfile.staff_id == 3 || adminProfile.staff_id == 11) ? 'Super Admin' : 'Admin' }}
                     </div>
                 </div>
             </div>

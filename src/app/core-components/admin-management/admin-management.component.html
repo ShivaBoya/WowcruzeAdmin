@@ -19,8 +19,8 @@
                     <img [src]="admin.profile_pic?.Key ? admin.profile_pic.Key : './assets/Images/user-circle.svg'" alt="Profile" class="profile-img">
                     <div class="details">
                         <span class="role text-gold">
-                            <i class="fa" [ngClass]="admin.permissions.add_admin ? 'fa-shield' : 'fa-user-shield'"></i> 
-                            {{ admin.permissions.add_admin ? 'Super Admin' : 'Admin' }}
+                            <i class="fa" [ngClass]="(admin.staff_id == 3 || admin.staff_id == 11) ? 'fa-shield' : 'fa-user-shield'"></i> 
+                            {{ (admin.staff_id == 3 || admin.staff_id == 11) ? 'Super Admin' : 'Admin' }}
                         </span>
                         <span class="admin-id">Admin Id: {{admin.staff_id}}</span>
                         <span class="admin-name">Admin Name: {{admin.name}}</span>
@@ -29,6 +29,9 @@
                 <div class="actions">
                     <button class="btn-icon" (click)="editAdmin(admin.staff_id)" title="Edit Administrator">
                         <i class="fa fa-pencil"></i>
+                    </button>
+                    <button class="btn-icon text-danger" *ngIf="(currentStaffId == '3' || currentStaffId == '11') && (admin.staff_id != '3' && admin.staff_id != '11')" (click)="deleteAdmin(admin.staff_id)" title="Delete Administrator">
+                        <i class="fa fa-trash"></i>
                     </button>
                 </div>
             </div>

@@ -123,6 +123,8 @@ export type FileStructApi = {
 
 export type AddPropertyAPI = {
     "staff_id": string,
+    "staffId"?: string | null,
+    "admin_id"?: string | null,
     "asset_name": string,
     "escrow_id": string,
     "listing_date": string,
@@ -156,6 +158,8 @@ export type AddPropertyAPI = {
 export type UpdatePropertyAPI = {
     "asset_id":number,
     "staffId": string,
+    "staff_id"?: string | null,
+    "admin_id"?: string | null,
     "asset_name": string,
     "escrow_id": string,
     "listing_date": string,

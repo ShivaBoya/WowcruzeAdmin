@@ -40,23 +40,8 @@ export class AddAdminComponent implements OnInit {
     view_user_profile: false
   };
 
-  permissionList = [
-    { key: 'view_admin', label: 'View Admins' },
-    { key: 'add_admin', label: 'Add Admin' },
-    { key: 'edit_admin', label: 'Edit Admin' },
-    { key: 'delete_admin', label: 'Delete Admin' },
-    { key: 'view_asset', label: 'View Assets' },
-    { key: 'create_new_asset', label: 'Add Asset' },
-    { key: 'edit_asset', label: 'Edit Asset' },
-    { key: 'delete_asset', label: 'Delete Asset' },
-    { key: 'view_user_profile', label: 'View Users' },
-    { key: 'create_new_user', label: 'Add User' },
-    { key: 'edit_user_profile', label: 'Edit User' },
-    { key: 'delete_user', label: 'Delete User' },
-    { key: 'overview_access', label: 'Overview Access' },
-    { key: 'transactions_access', label: 'Transactions Access' }
-  ];
 
+  permissionList: any[] = [];
   errorMessage: string = '';
 
   constructor(
@@ -66,7 +51,31 @@ export class AddAdminComponent implements OnInit {
     private dataService: DataService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.fetchPermissions();
+  }
+
+  fetchPermissions() {
+    this.httpService.getAllPermissions().then((res: any) => {
+      if (res && Array.isArray(res)) {
+        this.permissionList = res.map(p => ({
+          key: p.permission_name,
+          label: this.formatLabel(p.permission_name)
+        }));
+        
+        // Initialize permissions object dynamically
+        this.permissionList.forEach(p => {
+          this.permissions[p.key] = false;
+        });
+      }
+    }).catch(err => {
+      console.error("Error fetching permissions:", err);
+    });
+  }
+
+  formatLabel(key: string): string {
+    return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  }
 
   onFileChange(event: any) {
     const file = event.target.files[0];

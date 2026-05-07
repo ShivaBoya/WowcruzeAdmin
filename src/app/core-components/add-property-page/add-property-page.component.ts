@@ -357,6 +357,7 @@ isCorrectEmail = false;
       this.propertyId = Number(this.activatedroute.snapshot.paramMap.get("id"));
       let obj = {
         "asset_id": this.propertyId,
+        "admin_id": localStorage.getItem('staff_id'),
         "user_id": "g2w3606o"
       }
       this.isPageLoader = true;
@@ -375,11 +376,23 @@ isCorrectEmail = false;
         })
         .catch((error) => {
           console.error('Error in ngOnInit asset details loading:', error);
+          this.isPageLoader = false;
+          
+          let errorMessage = typeof error === 'string' ? error : "Error at fetching property details";
+          let modalTitle = 'Property Details Failed';
+          let modalContent = 'Error at fetching property details, please try again later.';
+
+          if (errorMessage.includes("Not Authorized")) {
+            modalTitle = "Access Denied";
+            modalContent = "You do not have permission to view this asset's details.";
+          }
+
           let modalItem: ApiModal = {
-            title: 'Property Details Failed',
-            content: 'Error at fetching property details, please try again later. If the issue persists please contact the support team.',
-            status: true
-          } as ApiModal;
+            title: modalTitle,
+            content: modalContent,
+            status: true,
+            router: errorMessage.includes("Not Authorized") ? 'Property' : ''
+          } as ApiModal
           this.dataService.modalUpdater(ModalTypes.ERR_API).next(modalItem);
         })
         .finally(() => {
@@ -652,9 +665,18 @@ isCorrectEmail = false;
           this.isPageLoader = false;
         },
         (error) => {
+          let errorMessage = typeof error === 'string' ? error : "Failed to update asset.";
+          let modalTitle = 'Asset Updation Failed';
+          let modalContent = errorMessage;
+
+          if (errorMessage.includes("Not Authorized")) {
+            modalTitle = "Access Denied";
+            modalContent = "You do not have permission to modify asset details.";
+          }
+
           let modalItem: ApiModal = {
-            title: 'Asset Updation Failed',
-            content: error,
+            title: modalTitle,
+            content: modalContent,
             status: true,
             router: ''
           } as ApiModal
@@ -795,13 +817,12 @@ isCorrectEmail = false;
   addBrandName(addedVal:any){
     if (!this.assetsBrands) return;
     this.assetsBrands.forEach((item:any) => {
-      if (item.child_brands) {
-        item.child_brands.forEach((item1:any) => {
-          if(item1.label == addedVal){
-            this.stepOneForm.get('brandType')!.setValue(item.label);
-            }
-        }); 
-      }
+      const children = item.child_brands || item.variants || [];
+      children.forEach((item1:any) => {
+        if(item1.label == addedVal || item1.brand_label == addedVal || item1.variant_label == addedVal){
+          this.stepOneForm.get('brandType')!.setValue(item.brand_label || item.label);
+        }
+      }); 
     });
   }
   addAircondition(addedVal:any){
@@ -974,7 +995,7 @@ isNumber(value:any) {
       }
       
       const brand = this.assetsBrands?.find((b: any) => b.label === option);
-      this.subBrandeatils = brand ? brand.child_brands : [];
+      this.subBrandeatils = brand ? (brand.child_brands || brand.variants || []) : [];
     }
     const droupDown = document.getElementById('detailsDroupDownBrand');
     if (droupDown) droupDown.style.display = 'none';
@@ -1234,7 +1255,9 @@ isNumber(value:any) {
     });
 
     // console.log(invoiceAttributes);
-    propertyInfo.staff_id = this.dataService.staffIdSubject.value;
+    propertyInfo.staff_id = localStorage.getItem('staff_id') || this.dataService.staffIdSubject.value || '';
+    propertyInfo.admin_id = propertyInfo.staff_id; // Send both for compatibility
+    propertyInfo.staffId = propertyInfo.staff_id; 
     propertyInfo.asset_name = this.stepOneForm.controls['assetName'].value;
     // propertyInfo.account_details[0].account_id = this.stepOneForm.controls['escrowIdName'].value;
     // propertyInfo.account_details[0].account_email = this.stepOneForm.controls['escrowIdEmail'].value;
@@ -1429,6 +1452,9 @@ isNumber(value:any) {
     }
     propertyInfo.account_details = [obj];
     propertyInfo.active = 1;
+    propertyInfo.admin_id = localStorage.getItem('staff_id') || '';
+    propertyInfo.staff_id = propertyInfo.admin_id || '';
+    propertyInfo.staffId = propertyInfo.admin_id || '';
     return propertyInfo;
   }
 
@@ -1568,6 +1594,9 @@ isNumber(value:any) {
     }
     propertyInfo.account_details = [obj];
     propertyInfo.active = 1;
+    propertyInfo.admin_id = localStorage.getItem('staff_id') || '';
+    propertyInfo.staff_id = propertyInfo.admin_id || '';
+    propertyInfo.staffId = propertyInfo.admin_id || '';
     return propertyInfo;
   }
 

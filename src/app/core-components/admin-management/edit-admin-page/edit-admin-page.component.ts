@@ -26,23 +26,8 @@ export class EditAdminComponent implements OnInit {
     permissions: {}
   };
 
-  permissionList = [
-    { key: 'view_admin', label: 'View Admins' },
-    { key: 'add_admin', label: 'Add Admin' },
-    { key: 'edit_admin', label: 'Edit Admin' },
-    { key: 'delete_admin', label: 'Delete Admin' },
-    { key: 'view_asset', label: 'View Assets' },
-    { key: 'create_new_asset', label: 'Add Asset' },
-    { key: 'edit_asset', label: 'Edit Asset' },
-    { key: 'delete_asset', label: 'Delete Asset' },
-    { key: 'view_user_profile', label: 'View Users' },
-    { key: 'create_new_user', label: 'Add User' },
-    { key: 'edit_user_profile', label: 'Edit User' },
-    { key: 'delete_user', label: 'Delete User' },
-    { key: 'overview_access', label: 'Overview Access' },
-    { key: 'transactions_access', label: 'Transactions Access' }
-  ];
 
+  permissionList: any[] = [];
   errorMessage: string = '';
 
   constructor(
@@ -56,10 +41,28 @@ export class EditAdminComponent implements OnInit {
   ngOnInit(): void {
     this.staffId = this.route.snapshot.paramMap.get('id');
     if (this.staffId) {
+      this.fetchPermissions();
       this.fetchAdminDetails();
     } else {
       this.router.navigate(['/admin-management']);
     }
+  }
+
+  fetchPermissions() {
+    this.httpService.getAllPermissions().then((res: any) => {
+      if (res && Array.isArray(res)) {
+        this.permissionList = res.map(p => ({
+          key: p.permission_name,
+          label: this.formatLabel(p.permission_name)
+        }));
+      }
+    }).catch(err => {
+      console.error("Error fetching permissions:", err);
+    });
+  }
+
+  formatLabel(key: string): string {
+    return key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   }
 
   fetchAdminDetails() {

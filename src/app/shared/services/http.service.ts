@@ -613,7 +613,27 @@ export class HttpService {
         });
     }
 
+
+    getAllPermissions(): Promise<any> {
+        let url = `${web2configurations.API_URL}/wc-admin/get-all-permissions`;
+        return new Promise<any>((resolve, reject) => {
+            try {
+                this.http.post(url, {}, { headers: this.getApiHeader() }).subscribe(
+                    (response: any) => {
+                        resolve(response.data);
+                    },
+                    (error: any) => {
+                        reject(this.getFormattedErrorCode(error));
+                    }
+                );
+            } catch (error) {
+                reject(this.getFormattedErrorCode(error));
+            }
+        });
+    }
+
     editAdmin(payload: any): Promise<any> {
+
         let url = `${web2configurations.API_URL}/wc-admin/edit-admin`;
         return new Promise<any>((resolve, reject) => {
             try {
@@ -632,7 +652,31 @@ export class HttpService {
         });
     }
 
+
+    deleteAdmin(target_staff_id: string): Promise<any> {
+        let url = `${web2configurations.API_URL}/wc-admin/delete-admin`;
+        let payload = {
+            admin_id: localStorage.getItem('staff_id'),
+            staff_id: target_staff_id
+        };
+        return new Promise<any>((resolve, reject) => {
+            try {
+                this.http.post(url, payload, { headers: this.getApiHeader() }).subscribe(
+                    (response: any) => {
+                        resolve(response.data);
+                    },
+                    (error: any) => {
+                        reject(this.getFormattedErrorCode(error));
+                    }
+                );
+            } catch (error) {
+                reject(this.getFormattedErrorCode(error));
+            }
+        });
+    }
+
     getUsers(filters: any = {}, page: number = 1, pageSize: number = 10): Promise<any> {
+
         let url = `${web2configurations.API_URL}/wc-admin/get-users`;
         return new Promise<any>((resolve, reject) => {
             try {

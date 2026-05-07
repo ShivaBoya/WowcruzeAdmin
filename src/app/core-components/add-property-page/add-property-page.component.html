@@ -547,8 +547,8 @@
                       <ul class="mat-scroll dd-listner-location">
                         <li class="dropdown-item dd-listner-location fs-12 c-pointer d-flex justify-content-between"
                           *ngFor="let brand of subBrandeatils">
-                          <span class="flex-fill dd-listner-location" (mousedown)="onChangeSubBrand($event, brand.label)">
-                            {{ brand.label }}
+                          <span class="flex-fill dd-listner-location" (mousedown)="onChangeSubBrand($event, brand.label || brand.variant_label)">
+                            {{ brand.label || brand.variant_label }}
                           </span>
                           <span class="remove-icon dd-listner-location" (click)="removeBrand($event, 'SUBBRAND', brand.brand_id)">X</span>
                         </li>
